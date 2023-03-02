@@ -7,13 +7,15 @@ import {
 } from '@heroicons/react/24/outline';
 
 import cn from '../utils/classnames';
+import Logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [selectedNavOption, setSelectedNavOption] = useState('statistics');
 
   return (
     <div className="bg-secondaryBackground px-5 py-10 h-screen w-[250px] flex flex-col gap-[50px]">
-      <div className="">
+      <div className="flex gap-2 items-end">
+        <img src={Logo} className="h-9 w-9" />
         <h1 className="font-bold text-xl">
           Park<span className="text-fontSelected">ify</span>
         </h1>

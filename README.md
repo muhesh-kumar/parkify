@@ -1,12 +1,5 @@
 # Parkify
 
-## Future Work
-
-- Add Loading Animation
-- Add Authentication
-- Add Responsiveness
-- Implement all the features present in the original Hacker News website
-
 ## Tech Stack
 
 - ReactJS

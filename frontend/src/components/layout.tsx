@@ -2,14 +2,14 @@ import { FC, ReactElement } from 'react';
 import Navbar from './navbar';
 
 type LayoutProps = {
-  children: ReactElement;
+  children: ReactElement | ReactElement[];
 };
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex font-poppins text-white">
+    <div className="flex font-poppins text-[#EBEBEB]">
       <Navbar />
-      {children}
+      <div className="bg-primaryBackground w-screen p-8 flex flex-col gap-5">{children}</div>
     </div>
   );
 };

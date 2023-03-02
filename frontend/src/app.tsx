@@ -1,11 +1,12 @@
 import Layout from './components/layout';
+import Logs from './components/logs';
+import ParkingSlotsAvailability from './components/parking-slots-availability';
 
 const App = () => {
   return (
     <Layout>
-      <div className="">
-        <h1 className="">Hello</h1>
-      </div>
+      <ParkingSlotsAvailability />
+      <Logs />
     </Layout>
   );
 };

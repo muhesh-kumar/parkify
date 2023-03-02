@@ -12,11 +12,13 @@
     "@heroicons/react": "^2.0.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-table": "^7.8.0",
     "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
     "@vitejs/plugin-react": "^3.1.0",
