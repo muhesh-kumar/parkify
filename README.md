@@ -1,1 +1,23 @@
-# smart-car-parking-system
+# Parkify
+
+## Future Work
+
+- Add Loading Animation
+- Add Authentication
+- Add Responsiveness
+- Implement all the features present in the original Hacker News website
+
+## Tech Stack
+
+- ReactJS
+- TypeScript
+- TailwindCSS
+- Vite
+
+## Design Credits
+
+- https://dribbble.com/shots/17654303-Dorsen-Parking-Dashboard
+
+## Design
+
+- https://cdn.dribbble.com/users/4812501/screenshots/17654303/media/63f9d8c7378c19367e44a4cde3d8420b.png?compress=1&resize=1600x1200&vertical=top
