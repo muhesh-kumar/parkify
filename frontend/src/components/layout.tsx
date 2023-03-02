@@ -9,7 +9,9 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex font-poppins text-[#EBEBEB]">
       <Navbar />
-      <div className="bg-primaryBackground w-screen p-8 flex flex-col gap-5">{children}</div>
+      <div className="bg-primaryBackground w-screen p-8 flex flex-col gap-5">
+        {children}
+      </div>
     </div>
   );
 };

@@ -4,13 +4,34 @@ import {
   RectangleGroupIcon,
   BuildingOffice2Icon,
   ArrowLeftOnRectangleIcon,
+  TableCellsIcon,
 } from '@heroicons/react/24/outline';
 
 import cn from '../utils/classnames';
 import Logo from '../assets/logo.png';
 
+const navOptions = [
+  {
+    name: 'parking-slots-availability',
+    content: 'Dashboard',
+    icon: <RectangleGroupIcon className="h-5 w-5" />,
+  },
+  {
+    name: 'real-time-logs',
+    content: 'Real Time Logs',
+    icon: <TableCellsIcon className="h-5 w-5" />,
+  },
+  {
+    name: 'statistics',
+    content: 'Statistics',
+    icon: <ChartPieIcon className="h-5 w-5" />,
+  },
+];
+
 const Navbar = () => {
-  const [selectedNavOption, setSelectedNavOption] = useState('statistics');
+  const [selectedNavOption, setSelectedNavOption] = useState(
+    'parking-slots-availability'
+  );
 
   return (
     <div className="bg-secondaryBackground px-5 py-10 h-screen w-[250px] flex flex-col gap-[50px]">
@@ -22,30 +43,22 @@ const Navbar = () => {
       </div>
 
       <div>
-        <div
-          className={cn(
-            'flex gap-2 items-center text-xs py-2 px-4',
-            selectedNavOption == 'statistics'
-              ? 'text-fontSelected bg-selected font-semibold rounded-[12.5px]'
-              : ''
-          )}
-          onClick={() => setSelectedNavOption('statistics')}
-        >
-          <ChartPieIcon className="h-5 w-5" />
-          <p>Statistics</p>
-        </div>
-        <div
-          className={cn(
-            'flex gap-2 items-center text-xs py-2 px-4',
-            selectedNavOption == 'dashboard'
-              ? 'text-fontSelected bg-selected font-semibold rounded-[12.5px]'
-              : ''
-          )}
-          onClick={() => setSelectedNavOption('dashboard')}
-        >
-          <RectangleGroupIcon className="h-5 w-5" />
-          <p>Dashboard</p>
-        </div>
+        {navOptions.map((option) => {
+          return (
+            <div
+              className={cn(
+                'flex gap-2 items-center text-xs py-2 px-4',
+                selectedNavOption == option.name
+                  ? 'text-fontSelected bg-selected font-semibold rounded-[12.5px]'
+                  : ''
+              )}
+              onClick={() => setSelectedNavOption(option.name)}
+            >
+              {option.icon}
+              <p>{option.content}</p>
+            </div>
+          );
+        })}
       </div>
 
       <div className="mt-auto flex flex-col gap-2 items-center">
