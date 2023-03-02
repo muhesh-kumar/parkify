@@ -7,7 +7,8 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="flex font-poppins text-[#EBEBEB]">
+    // FIXME: remove scroll bars from the page
+    <div className="flex font-poppins text-[#EBEBEB] overflow-y-hidden">
       <Navbar />
       <div className="bg-primaryBackground w-screen p-8 flex flex-col gap-5">
         {children}
