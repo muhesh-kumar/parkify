@@ -1,30 +1,11 @@
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-import cn from '../utils/classnames';
 import SectionLayout from './section-layout';
 
-const logs = () => {
-  const data = [
-    {
-      identifier: 'abc@gmail.com',
-      carManufacturer: 'Range Rover',
-      plateNumber: 'WN-054-NW',
-      timeOfEntry: '15:52 24 January, 2022',
-    },
-    {
-      identifier: 'abc@gmail.com',
-      carManufacturer: 'Range Rover',
-      plateNumber: 'WN-054-NW',
-      timeOfEntry: '15:52 24 January, 2022',
-    },
-    {
-      identifier: 'abc@gmail.com',
-      carManufacturer: 'Range Rover',
-      plateNumber: 'WN-054-NW',
-      timeOfEntry: '15:52 24 January, 2022',
-    },
-  ];
+import cn from '../utils/classnames';
+import data from '../data/';
 
+const logs = () => {
   return (
     <SectionLayout>
       {/* Header */}
@@ -41,29 +22,31 @@ const logs = () => {
       </div>
 
       {/* Logs Table */}
-      <div className="bg-primaryBackground rounded-xl flex flex-col gap-2 font-semibold text-xs">
+      <div className="bg-primaryBackground rounded-xl flex flex-col font-semibold text-xs max-h-[520px]">
         <div className="border-b border-b-[#3E3E3E] flex bg-selected text-fontSelected rounded-t-xl py-6 px-3">
           <p className="w-1/4">Name/Email</p>
           <p className="w-1/4">Car Manufacturer</p>
           <p className="w-1/4">Plate Number</p>
           <p className="w-1/4">Time of Entry</p>
         </div>
-        {data.map((row, idx) => {
-          return (
-            <div
-              key={row.identifier}
-              className={cn(
-                'flex py-4 px-3',
-                idx < data.length - 1 ? 'border-b-2 border-b-[#3E3E3E]' : ''
-              )}
-            >
-              <p className="w-1/4">{row.identifier}</p>
-              <p className="w-1/4">{row.carManufacturer}</p>
-              <p className="w-1/4">{row.plateNumber}</p>
-              <p className="w-1/4">{row.timeOfEntry}</p>
-            </div>
-          );
-        })}
+        <div className="flex flex-col gap-2 overflow-y-auto">
+          {data.map((row, idx) => {
+            return (
+              <div
+                key={row.identifier}
+                className={cn(
+                  'flex py-4 px-3',
+                  idx < data.length - 1 ? 'border-b-2 border-b-[#3E3E3E]' : ''
+                )}
+              >
+                <p className="w-1/4">{row.identifier}</p>
+                <p className="w-1/4">{row.carManufacturer}</p>
+                <p className="w-1/4">{row.plateNumber}</p>
+                <p className="w-1/4">{row.timeOfEntry}</p>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </SectionLayout>
   );

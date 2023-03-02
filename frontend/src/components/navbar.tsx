@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useAtom } from 'jotai';
 import {
   ChartPieIcon,
   RectangleGroupIcon,
@@ -7,6 +7,7 @@ import {
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
 
+import { selectedNavOptionAtom } from '../state';
 import cn from '../utils/classnames';
 import Logo from '../assets/logo.png';
 
@@ -29,12 +30,12 @@ const navOptions = [
 ];
 
 const Navbar = () => {
-  const [selectedNavOption, setSelectedNavOption] = useState(
-    'parking-slots-availability'
+  const [selectedNavOption, setSelectedNavOption] = useAtom(
+    selectedNavOptionAtom
   );
 
   return (
-    <div className="bg-secondaryBackground px-5 py-10 h-screen w-[250px] flex flex-col gap-[50px]">
+    <div className="h-screen bg-secondaryBackground px-5 py-10 w-[250px] flex flex-col gap-[50px]">
       <div className="flex gap-2 items-end">
         <img src={Logo} className="h-9 w-9" />
         <h1 className="font-bold text-xl">

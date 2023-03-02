@@ -2,7 +2,7 @@ import { FC, ReactElement } from 'react';
 import Navbar from './navbar';
 
 type LayoutProps = {
-  children: ReactElement | ReactElement[];
+  children: ReactElement | ReactElement[] | boolean;
 };
 
 const Layout: FC<LayoutProps> = ({ children }) => {
