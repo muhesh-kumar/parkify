@@ -13,7 +13,7 @@ const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
   const isAvailable = availableSlots.has(id);
   // availableSlots.delete(17);
   // setAvailableSlots(availableSlots);
-  console.log(availableSlots, availableSlots.size);
+  // console.log(availableSlots, availableSlots.size);
   return (
     <div
       className={cn(
