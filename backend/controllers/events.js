@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 
-const redisClient = require('../redis-client');
+const redisClient = require('../lib/redis-client');
 const HttpError = require('../utils/http-error');
 
 const getEvents = async (req, res, next) => {
@@ -14,7 +14,9 @@ const getEvents = async (req, res, next) => {
       acc[key] = JSON.parse(values[index]);
       return acc;
     }, {});
+    console.log(events);
   } catch (err) {
+    console.log(err);
     const error = new HttpError('Unable to fetch the events', 500);
     return next(error);
   }
@@ -27,35 +29,38 @@ const getEvents = async (req, res, next) => {
   res.json({ events: events });
 };
 
-const createEvent = async (req, res, next) => {
-  const errors = validationResult(req);
+// const createEvent = async (req, res, next) => {
+//   const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    const error = new HttpError('Invalid data provided', 422);
-    return next(error);
-  }
+//   if (!errors.isEmpty()) {
+//     const error = new HttpError('Invalid data provided', 422);
+//     return next(error);
+//   }
 
-  const { entryTimeStamp } = req.body;
-  const plateNumber = 'ABC-123-WW-45'; // TODO: recieve it from the RPi itself
-  const createdEvent = {
-    entryTimeStamp,
-    createImageLocation: '/upload/test.jpg',
-    // carImageLocation: req.file.path,
-  };
+//   const { entryTimeStamp } = req.body;
+//   const plateNumber = Math.floor(Math.random() * 1000000000).toString(36); // TODO: recieve it from the RPi itself
 
-  try {
-    const response = await redisClient.set(
-      plateNumber,
-      JSON.stringify(createdEvent)
-    );
-    console.log(response);
-  } catch (err) {
-    const error = new HttpError('Unable to create a new event', 500);
-    return next(error);
-  }
+//   // const plateNumber = 'ABC-123-WW-45'; // TODO: recieve it from the RPi itself
+//   const createdEvent = {
+//     entryTimeStamp,
+//     createImageLocation: '/upload/test.jpg',
+//     // carImageLocation: req.file.path,
+//   };
 
-  res.status(201).json({ event: createdEvent });
-};
+//   try {
+//     const response = await redisClient.set(
+//       plateNumber,
+//       JSON.stringify(createdEvent)
+//     );
+//     console.log('when adding to the db: ', response);
+//   } catch (err) {
+//     console.log(err);
+//     const error = new HttpError('Unable to create a new event', 500);
+//     return next(error);
+//   }
+
+//   res.status(201).json({ event: createdEvent });
+// };
 
 exports.getEvents = getEvents;
-exports.createEvent = createEvent;
+// exports.createEvent = createEvent;

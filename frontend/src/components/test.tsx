@@ -18,17 +18,40 @@ function getTime() {
   return `${hours}:${minutes} ${day} ${month}, ${year}`;
 }
 
+const socket = io('http://localhost:3000');
+
 const Chat = () => {
   const [data, setData] = useState<APIData[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
 
   useEffect(() => {
-    const socket = io('http://localhost:3000');
+    const fetchData = async () => {
+      try {
+        const result = await fetch('http://localhost:3000/api/events');
+        const data = await result.json();
+        console.log('fetch result: ', data);
+        // convert an object into array of objects
+        const newData = Object.keys(data.events).map((key) => ({
+          plateNumber: key,
+          carImageLocation: data.events[key].carImageLocation,
+          entryTimeStamp: data.events[key].entryTimeStamp,
+        }));
 
+        setData(newData);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     // Handle incoming data
-    socket.on('redis-update', (data: any) => {
-      setData((prevData) => [...prevData, data]);
-    });
+    const eventListener = (data: any) => {
+      console.log('new incoming data: ', data);
+      setData((prevData) => [data, ...prevData]);
+    };
+    socket.on('redis-update', eventListener);
 
     return () => {
       socket.disconnect();
@@ -43,15 +66,12 @@ const Chat = () => {
 
       // Send the data to the server
       const newData = {
-        plateNumber: 'ABC-123-WW-45',
+        plateNumber: 'ABC-123-WW-41',
         // carImageLocation: '/images/cars/ABC123.png',
         carImageLocation: inputValue,
         entryTimeStamp: getTime(),
       };
-      socket.emit('chat message', newData);
-
-      // Add the data to the local state
-      setData((prevData) => [...prevData, newData]);
+      socket.emit('redis-update', newData);
 
       // Reset the input value
       setInputValue('');
@@ -72,6 +92,7 @@ const Chat = () => {
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          className="text-black"
         />
         <button type="submit">Send</button>
       </form>

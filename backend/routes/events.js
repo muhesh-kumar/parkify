@@ -6,6 +6,6 @@ const eventValidations = require('../validations/events');
 const fileUpload = require('../middlewares/file-upload');
 
 router.get('/', getEvents);
-router.post('/', fileUpload.single('image'), eventValidations, createEvent);
+// router.post('/', fileUpload.single('image'), eventValidations, createEvent);
 
 module.exports = router;
