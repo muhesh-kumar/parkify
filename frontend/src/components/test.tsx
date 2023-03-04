@@ -1,16 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 
+type APIData = {
+  plateNumber: string;
+  carImageLocation: string;
+  entryTimeStamp: string;
+};
+
+// get time in the following format: hh:mm date, month, year. and use 24 hours format and month in words
+function getTime() {
+  const date = new Date();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const day = date.getDate();
+  const month = date.toLocaleString('default', { month: 'long' });
+  const year = date.getFullYear();
+  return `${hours}:${minutes} ${day} ${month}, ${year}`;
+}
+
 const Chat = () => {
-  const [messages, setMessages] = useState<string[]>([]);
+  const [data, setData] = useState<APIData[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
 
   useEffect(() => {
     const socket = io('http://localhost:3000');
 
-    // Handle incoming chat messages
-    socket.on('chat message', (msg: string) => {
-      setMessages((prevMessages) => [...prevMessages, msg]);
+    // Handle incoming data
+    socket.on('redis-update', (data: any) => {
+      setData((prevData) => [...prevData, data]);
     });
 
     return () => {
@@ -24,11 +41,17 @@ const Chat = () => {
     if (inputValue !== '') {
       const socket = io('http://localhost:3000');
 
-      // Send the chat message to the server
-      socket.emit('chat message', inputValue);
+      // Send the data to the server
+      const newData = {
+        plateNumber: 'ABC-123-WW-45',
+        // carImageLocation: '/images/cars/ABC123.png',
+        carImageLocation: inputValue,
+        entryTimeStamp: getTime(),
+      };
+      socket.emit('chat message', newData);
 
-      // Add the chat message to the local state
-      setMessages((prevMessages) => [...prevMessages, inputValue]);
+      // Add the data to the local state
+      setData((prevData) => [...prevData, newData]);
 
       // Reset the input value
       setInputValue('');
@@ -38,8 +61,10 @@ const Chat = () => {
   return (
     <div>
       <ul>
-        {messages.map((msg) => (
-          <li key={msg}>{msg}</li>
+        {data.map((msg) => (
+          <li key={msg.carImageLocation}>
+            {msg.plateNumber}, {msg.carImageLocation}, {msg.entryTimeStamp}
+          </li>
         ))}
       </ul>
       <form onSubmit={handleSubmit}>

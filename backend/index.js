@@ -1,71 +1,19 @@
 require('dotenv').config();
 
 const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
 const http = require('http');
+const express = require('express');
 const { Server } = require('socket.io');
-const { createClient } = require('redis');
-const { promisify } = require('util');
+const bodyParser = require('body-parser');
+const redisClient = require('./redis-client');
 
-const redisClient = createClient({
-  password: 'hrjvcSFOKrqNvnHUXwthokI9SF6l5Rtp',
-  socket: {
-    host: 'redis-17510.c301.ap-south-1-1.ec2.cloud.redislabs.com',
-    port: 17510,
-  },
-});
-
-async function connectRedisClient() {
+// Connect to the Remote Redis DB
+(async function () {
   await redisClient.connect();
-}
-connectRedisClient();
-
-// add a sample json to a redis DB with error handling
-async function addJsonToRedis(key, json) {
-  try {
-    const response = await redisClient.set(key, JSON.stringify(json));
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-const carData = {
-  carImageLocation: '/images/cars/ABC123.png',
-  entryTimeStamp: '2022-02-28T10:00:00Z',
-};
-
-// addJsonToRedis('ABC123', carData);
-
-// delete a key from a redis DB with error handling
-async function deleteKeyFromRedis(key) {
-  try {
-    const response = await redisClient.del(key);
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
-}
-// deleteKeyFromRedis('car_entry_data');
-
-// get all the keys and its corresponding value from a redis DB with error handling
-async function getAllKeysFromRedis() {
-  try {
-    const keys = await redisClient.keys('*');
-    const values = await Promise.all(keys.map((key) => redisClient.get(key)));
-    const result = keys.reduce((acc, key, index) => {
-      acc[key] = JSON.parse(values[index]);
-      return acc;
-    }, {});
-    console.log(result);
-  } catch (err) {
-    console.log(err);
-  }
-}
-// getAllKeysFromRedis();
+})();
 
 const HttpError = require('./utils/http-error');
+const eventRoutes = require('./routes/events');
 
 const app = express();
 const server = http.createServer(app);
@@ -89,10 +37,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use('/api/events', eventRoutes);
+app.use('/api/events', eventRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError('could not find this route.', 404);
+  err.status = 404;
+  next(err);
   throw error;
 });
 
@@ -101,16 +51,18 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
+// emit a socket event whenever there's a change in the redis DB
+
 // Set up a Socket.IO connection
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Handle a chat message event
-  socket.on('chat message', (msg) => {
-    console.log('message: ' + msg);
+  // Handle a change of data in Redis DB
+  socket.on('redis-update', (data) => {
+    console.log('Data: ' + data);
 
-    // Broadcast the message to all connected clients
-    io.emit('chat message', msg);
+    // Broadcast the data to all connected clients
+    io.emit('redis-update', data);
   });
 
   // Handle a disconnect event
