@@ -10,14 +10,22 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.16",
+    "chart.js": "^4.2.1",
+    "d3": "^7.8.3",
     "jotai": "^2.0.3",
     "react": "^18.2.0",
+    "react-calendar-heatmap": "^1.9.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-d3-components": "^0.9.1",
     "react-dom": "^18.2.0",
     "react-table": "^7.8.0",
+    "react-tooltip": "^5.10.1",
     "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.0",
     "@types/react": "^18.0.27",
+    "@types/react-calendar-heatmap": "^1.6.3",
     "@types/react-dom": "^18.0.10",
     "@types/react-table": "^7.7.14",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
