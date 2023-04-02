@@ -48,15 +48,17 @@ const Chat = () => {
   useEffect(() => {
     // Handle incoming data
     const eventListener = (data: any) => {
+      console.log('redis update event emittion detected');
       console.log('new incoming data: ', data);
       setData((prevData) => [data, ...prevData]);
     };
     socket.on('redis-update', eventListener);
 
     return () => {
-      socket.disconnect();
+      // socket.disconnect();
+      socket.off('redis-update', eventListener);
     };
-  }, []);
+  }, [socket]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -81,8 +83,9 @@ const Chat = () => {
   return (
     <div>
       <ul>
-        {data.map((msg) => (
-          <li key={msg.carImageLocation}>
+        {data.map((msg, idx) => (
+          <li key={idx}>
+            i{/* <li key={msg.carImageLocation}> */}
             {msg.plateNumber}, {msg.carImageLocation}, {msg.entryTimeStamp}
           </li>
         ))}

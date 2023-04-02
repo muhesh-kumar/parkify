@@ -27,6 +27,11 @@ const navOptions = [
     content: 'Statistics',
     icon: <ChartPieIcon className="h-5 w-5" />,
   },
+  {
+    name: 'socket-redis-check',
+    content: 'socket-redis-check',
+    icon: <ChartPieIcon className="h-5 w-5" />,
+  },
 ];
 
 const Navbar = () => {

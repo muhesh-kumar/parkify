@@ -19,6 +19,7 @@ const App = () => {
       )}
       {selectedNavOption === 'real-time-logs' ? <Logs /> : <></>}
       {selectedNavOption === 'statistics' ? <Statistics /> : <></>}
+      {selectedNavOption === 'socket-redis-check' ? <Test /> : <></>}
       {/* <Test /> */}
     </Layout>
   );

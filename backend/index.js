@@ -11,6 +11,7 @@ const { validationResult } = require('express-validator');
 // Connect to the Remote Redis DB
 (async function () {
   await redisClient.connect();
+  console.log('Connected to the Redis DB');
 })();
 
 const HttpError = require('./utils/http-error');
@@ -95,6 +96,9 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
+// a function to delete all keys in a redis DB
+redisClient.flushAll();
+
 io.on('connection', (socket) => {
   console.log('A user connected');
 
@@ -110,3 +114,5 @@ io.on('connection', (socket) => {
 server.listen(3000, () => {
   console.log('Server started on port 3000');
 });
+
+// curl -X POST -F 'file=frame.jpg' -F "entryTimeStamp=19:07:23" http://localhost:3000/api/events
