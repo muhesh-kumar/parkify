@@ -5,19 +5,9 @@ const http = require('http');
 const express = require('express');
 const { Server } = require('socket.io');
 const bodyParser = require('body-parser');
-const redisClient = require('./lib/redis-client');
-const { validationResult } = require('express-validator');
-
-// Connect to the Remote Redis DB
-(async function () {
-  await redisClient.connect();
-  console.log('Connected to the Redis DB');
-})();
 
 const HttpError = require('./utils/http-error');
 const eventRoutes = require('./routes/events');
-const eventValidations = require('./validations/events');
-const fileUpload = require('./middlewares/file-upload');
 
 const app = express();
 const server = http.createServer(app);
@@ -29,6 +19,10 @@ const io = new Server(server, {
   },
 });
 
+app.use((req, res, next) => {
+  req.io = io;
+  return next();
+});
 app.use(bodyParser.json());
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
 app.use((req, res, next) => {
@@ -42,47 +36,33 @@ app.use((req, res, next) => {
   next();
 });
 
-const createEvent = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    const error = new HttpError('Invalid data provided', 422);
-    return next(error);
-  }
-
-  const { entryTimeStamp } = req.body;
-  const plateNumber = Math.floor(Math.random() * 1000000000).toString(36); // TODO: recieve it from the RPi itself
-
-  // const plateNumber = 'ABC-123-WW-45'; // TODO: recieve it from the RPi itself
-  const createdEvent = {
-    entryTimeStamp,
-    carImageLocation: '/upload/test.jpg',
-    // carImageLocation: req.file.path,
-  };
-
+// add values to set
+async function addToSet(slot) {
   try {
-    const response = await redisClient.set(
-      plateNumber,
-      JSON.stringify(createdEvent)
-    );
-    console.log('when adding to the db: ', response);
-    io.emit('redis-update', { plateNumber, ...createdEvent });
+    const response = await redisClient.sAdd('availableSlots', [String(slot)]);
+    console.log(response);
+  } catch (err) {
+    console.log('Error: ', err);
+  }
+}
+// addToSet(1);
+// for (let i = 1; i <= 162; i++) {
+//   addToSet(i);
+// }
+
+// create a function to fetch values from a redis set with the name availableSlots
+const getAvailableSlots = async () => {
+  try {
+    for await (const member of redisClient.sScanIterator('availableSlots')) {
+      console.log(member);
+    }
   } catch (err) {
     console.log(err);
-    const error = new HttpError('Unable to create a new event', 500);
-    return next(error);
   }
-
-  res.status(201).json({ event: createdEvent });
 };
+// getAvailableSlots();
 
 app.use('/api/events', eventRoutes);
-app.post(
-  '/api/events',
-  fileUpload.single('image'),
-  eventValidations,
-  createEvent
-);
 
 app.use((req, res, next) => {
   const error = new HttpError('could not find this route.', 404);
@@ -95,9 +75,6 @@ app.use((error, req, res, next) => {
   res.status(error.code || 500);
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
-
-// a function to delete all keys in a redis DB
-redisClient.flushAll();
 
 io.on('connection', (socket) => {
   console.log('A user connected');

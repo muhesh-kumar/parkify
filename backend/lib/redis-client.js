@@ -1,10 +1,9 @@
 require('dotenv').config();
-const { createClient } = require('redis');
+const Redis = require('ioredis');
 
-module.exports = createClient({
+module.exports = new Redis({
   password: process.env.REDIS_PASSWORD,
-  socket: {
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-  },
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  db: 0, // Defaults to 0
 });

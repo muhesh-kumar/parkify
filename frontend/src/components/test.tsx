@@ -85,20 +85,11 @@ const Chat = () => {
       <ul>
         {data.map((msg, idx) => (
           <li key={idx}>
-            i{/* <li key={msg.carImageLocation}> */}
+            {/* <li key={msg.carImageLocation}> */}
             {msg.plateNumber}, {msg.carImageLocation}, {msg.entryTimeStamp}
           </li>
         ))}
       </ul>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          className="text-black"
-        />
-        <button type="submit">Send</button>
-      </form>
     </div>
   );
 };

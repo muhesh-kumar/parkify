@@ -1,19 +1,15 @@
-import { ReactElement, FC } from 'react';
+import { ReactElement, FC, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 
 import cn from '../utils/classnames';
-import { availableSlotsAtom } from '../state/';
 
 type ParkingSlotProps = {
   id: number;
 };
 
 const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
-  const [availableSlots, setAvailableSlots] = useAtom(availableSlotsAtom);
-  const isAvailable = availableSlots.has(id);
-  // availableSlots.delete(17);
-  // setAvailableSlots(availableSlots);
-  // console.log(availableSlots, availableSlots.size);
+  // TODO: make it work later
+  const isAvailable = true;
   return (
     <div
       className={cn(
