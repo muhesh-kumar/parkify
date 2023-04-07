@@ -7,46 +7,18 @@ const getEvents = async (req, res, next) => {
   let events = {};
 
   try {
-    // get all the keys and its corresponding value from a redis DB with error handling
+    // get all the keys and its corresponding value from redis
     let cursor = '0';
     do {
       const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', '*');
       cursor = nextCursor;
 
       for (const key of keys) {
-        const keyType = await redis.type(key);
-        let value;
-
-        switch (keyType) {
-          case 'string':
-            value = await redis.get(key);
-            events[key] = JSON.parse(value);
-            break;
-          // case 'hash':
-          //   value = await redis.hgetall(key);
-          //   events[key] = {};
-          //   for (const prop in value) {
-          //     events[key][prop] = JSON.parse(value[prop]);
-          //   }
-          //   break;
-          // case 'list':
-          //   value = await redis.lrange(key, 0, -1);
-          //   events[key] = value.map(JSON.parse);
-          //   break;
-          // case 'set':
-          //   value = await redis.smembers(key);
-          //   events[key] = value;
-          //   break;
-          // case 'zset':
-          //   value = await redis.zrange(key, 0, -1, 'WITHSCORES');
-          //   events[key] = {};
-          //   for (let i = 0; i < value.length; i += 2) {
-          //     events[key][value[i]] = JSON.parse(value[i + 1]);
-          //   }
-          //   break;
-          default:
-            console.log(`Unknown key type: ${keyType}`);
-            break;
+        if (key !== 'availableSlots') {
+          value = await redis.get(key);
+          events[key] = JSON.parse(value);
+        } else {
+          console.log(`Unknown key`);
         }
       }
     } while (cursor !== '0');
@@ -96,7 +68,7 @@ const createEvent = async (req, res, next) => {
 
     // book the slot
     const result = await redis.srem('availableSlots', nextAvailableParkingSlot);
-    console.log('when booking a slot: ', response);
+    console.log('when booking a slot: ', result);
 
     io.emit('redis-update', { plateNumber, ...createdEvent });
   } catch (err) {

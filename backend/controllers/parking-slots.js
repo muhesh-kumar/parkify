@@ -1,5 +1,5 @@
 const redis = require('../lib/redis-client');
-const { NUM_PARKING_SLOTS } = require('../constants');
+const { NUM_PARKING_SLOTS } = require('../../common/constants');
 
 const getAvailableParkingSlots = async (req, res, next) => {
   let availableParkingSlots = [];
