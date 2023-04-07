@@ -13,7 +13,7 @@ const SectionLayout: FC<SectionLayoutProps> = ({
 }) => {
   return (
     <div
-      className="rounded-2xl py-3 px-4 w-full bg-secondaryBackground flex flex-col gap-4"
+      className="rounded-2xl py-3 px-4 w-full bg-secondaryBackground flex flex-col justify-center gap-4"
       style={{
         width: `${width}`,
         height: `${height}`,

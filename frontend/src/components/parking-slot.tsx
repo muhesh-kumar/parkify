@@ -10,6 +10,7 @@ type ParkingSlotProps = {
 
 const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
   const [availableSlots] = useAtom(availableSlotsAtom);
+
   return (
     <div
       className={cn(
