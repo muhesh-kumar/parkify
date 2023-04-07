@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 
 const HttpError = require('./utils/http-error');
 const eventRoutes = require('./routes/events');
+const parkingSlotsRoutes = require('./routes/parking-slots');
+const redis = require('./lib/redis-client');
 
 const app = express();
 const server = http.createServer(app);
@@ -36,33 +38,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// add values to set
-async function addToSet(slot) {
+// delete all the keys in a redis using ioredis package
+const deleteAllKeys = async () => {
   try {
-    const response = await redisClient.sAdd('availableSlots', [String(slot)]);
-    console.log(response);
-  } catch (err) {
-    console.log('Error: ', err);
-  }
-}
-// addToSet(1);
-// for (let i = 1; i <= 162; i++) {
-//   addToSet(i);
-// }
-
-// create a function to fetch values from a redis set with the name availableSlots
-const getAvailableSlots = async () => {
-  try {
-    for await (const member of redisClient.sScanIterator('availableSlots')) {
-      console.log(member);
+    const keys = await redis.keys('*');
+    if (keys.length > 0) {
+      await redis.del(keys);
     }
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.error('Error deleting keys:', error);
+    throw new Error('Error deleting keys');
   }
 };
-// getAvailableSlots();
+// deleteAllKeys();
 
 app.use('/api/events', eventRoutes);
+app.use('/api/parking-slots', parkingSlotsRoutes);
 
 app.use((req, res, next) => {
   const error = new HttpError('could not find this route.', 404);
