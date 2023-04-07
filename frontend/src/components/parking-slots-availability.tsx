@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import io from 'socket.io-client';
+import { availableSlotsAtom } from '../state/';
 
 import SectionLayout from './section-layout';
 import ParkingSlot from './parking-slot';
@@ -8,12 +9,26 @@ import AvailabilityStatus from './availability-status';
 
 const ParkingSlotsAvailability = () => {
   const socket = io('http://localhost:3000');
+  const [availableSlots, setAvailableSlots] = useAtom(availableSlotsAtom);
+
+  const getAvailabilitySlots = async () => {
+    const response = await fetch('http://localhost:3000/api/parking-slots');
+    const availableSlots = await response.json();
+    console.log('availableSlots: ', availableSlots.availableParkingSlots);
+    setAvailableSlots(new Set(availableSlots.availableParkingSlots));
+    console.log(availableSlots);
+  };
+
+  useEffect(() => {
+    getAvailabilitySlots();
+  }, []);
 
   useEffect(() => {
     // Handle incoming data
     const eventListener = (data: any) => {
       console.log('a car slot is requested');
       console.log('new incoming data: ', data);
+      getAvailabilitySlots();
     };
     socket.on('redis-update', eventListener);
 
@@ -118,7 +133,6 @@ const ParkingSlotsAvailability = () => {
       <div className="flex gap-2">{bottomRow2}</div>
     </div>
   );
-  console.log(currId);
 
   return (
     <div className="flex gap-5">

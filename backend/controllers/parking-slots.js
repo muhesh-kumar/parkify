@@ -1,6 +1,19 @@
 const redis = require('../lib/redis-client');
 const { NUM_PARKING_SLOTS } = require('../constants');
 
+const getAvailableParkingSlots = async (req, res, next) => {
+  let availableParkingSlots = [];
+  try {
+    const values = await redis.smembers('availableSlots');
+    availableParkingSlots = values;
+    console.log(availableParkingSlots);
+  } catch (error) {
+    console.error('Error fetching set values:', error);
+    throw new Error('Error fetching set values');
+  }
+  res.json({ availableParkingSlots });
+};
+
 const resetParkingSlots = async (req, res, next) => {
   const addValueToSet = async (setName, value) => {
     try {
@@ -16,21 +29,33 @@ const resetParkingSlots = async (req, res, next) => {
     addValueToSet('availableSlots', i);
   }
 
+  io.emit('redis-update', { message: 'Available Slots resetted' });
+
   res.status(201).json({ message: 'Parking Slots resetted successfully' });
 };
 
-const getAvailableParkingSlots = async (req, res, next) => {
-  let availableParkingSlots = [];
+const bookSlot = async (req, res, next) => {
+  const io = req.io;
+  const { id } = req.params;
+  console.log('Id to be removed', id);
+
   try {
-    const values = await redis.smembers('availableSlots');
-    availableParkingSlots = values;
-    console.log(availableParkingSlots);
-  } catch (error) {
-    console.error('Error fetching set values:', error);
-    throw new Error('Error fetching set values');
+    const result = await redis.srem('availableSlots', id);
+    if (result === 1) {
+      res.status(200).json({ message: 'ID removed from set' });
+      io.emit('redis-update', {
+        message: 'AvailableSlots changed after booking',
+      });
+    } else {
+      res.status(404).json({ message: 'ID not found in set' });
+    }
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError('Unable to remove ID from set', 500);
+    return next(error);
   }
-  res.json({ availableParkingSlots });
 };
 
 exports.resetParkingSlots = resetParkingSlots;
 exports.getAvailableParkingSlots = getAvailableParkingSlots;
+exports.bookSlot = bookSlot;
