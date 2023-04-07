@@ -20,6 +20,7 @@ const ParkingSlotsAvailability = () => {
   };
 
   useEffect(() => {
+    console.log('on page refresh, getting slots');
     getAvailabilitySlots();
   }, []);
 

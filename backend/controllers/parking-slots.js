@@ -15,6 +15,8 @@ const getAvailableParkingSlots = async (req, res, next) => {
 };
 
 const resetParkingSlots = async (req, res, next) => {
+  const io = req.io;
+
   const addValueToSet = async (setName, value) => {
     try {
       const result = await redis.sadd(setName, value);

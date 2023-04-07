@@ -78,18 +78,26 @@ const createEvent = async (req, res, next) => {
   const { entryTimeStamp } = req.body;
   // TODO: receive it from the RPi itself
   const plateNumber = Math.floor(Math.random() * 1000000000).toString(36);
-
   // const plateNumber = 'ABC-123-WW-45'; // TODO: receive it from the RPi itself
+
+  const nextAvailableParkingSlot = await getNextAvailableParkingSlot();
+  console.log('next available slot: ', nextAvailableParkingSlot);
   const createdEvent = {
     entryTimeStamp,
     carImageLocation: '/upload/test.jpg',
+    nextAvailableParkingSlot,
     // carImageLocation: req.file.path,
   };
 
-  // Add the event as a key value pair
   try {
+    // add the event
     const response = await redis.set(plateNumber, JSON.stringify(createdEvent));
-    console.log('when adding to the db: ', response);
+    console.log('when adding the event to the db: ', response);
+
+    // book the slot
+    const result = await redis.srem('availableSlots', nextAvailableParkingSlot);
+    console.log('when booking a slot: ', response);
+
     io.emit('redis-update', { plateNumber, ...createdEvent });
   } catch (err) {
     console.log(err);
@@ -98,6 +106,11 @@ const createEvent = async (req, res, next) => {
   }
 
   res.status(201).json({ event: createdEvent });
+};
+
+const getNextAvailableParkingSlot = async () => {
+  const members = await redis.smembers('availableSlots');
+  return members.length > 0 ? members[0] : null;
 };
 
 exports.getEvents = getEvents;
