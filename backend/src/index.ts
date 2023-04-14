@@ -1,16 +1,18 @@
 import dotenv from 'dotenv';
+import path from 'path';
+
 dotenv.config();
 
-import path from 'path';
 import http from 'http';
-import express from 'express';
-import { Server } from 'socket.io';
+import express, { Request, Response, NextFunction } from 'express';
+import { Server, Socket } from 'socket.io';
 import bodyParser from 'body-parser';
 
-import HttpError from './utils/http-error.js';
-import eventRoutes from './routes/events.js';
-import parkingSlotsRoutes from './routes/parking-slots.js';
-import redis from './lib/redis-client.js';
+// import { CustomRequest } from './types/';
+import HttpError from './utils/http-error';
+import eventRoutes from './routes/events';
+import parkingSlotsRoutes from './routes/parking-slots';
+import redis from './lib/redis-client';
 
 const app = express();
 const server = http.createServer(app);
@@ -22,13 +24,19 @@ const io = new Server(server, {
   },
 });
 
-app.use((req, res, next) => {
+declare module 'express-serve-static-core' {
+  interface Request {
+    io: Server;
+  }
+}
+
+app.use((req: Request, _res: Response, next: NextFunction) => {
   req.io = io;
   return next();
 });
 app.use(bodyParser.json());
 app.use('/uploads/images', express.static(path.join('uploads', 'images')));
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Headers',
@@ -56,19 +64,19 @@ const deleteAllKeys = async () => {
 app.use('/api/events', eventRoutes);
 app.use('/api/parking-slots', parkingSlotsRoutes);
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError('could not find this route.', 404);
-  err.status = 404;
-  next(err);
+  error.status = 404;
+  next(error);
   throw error;
 });
 
-app.use((error, req, res, next) => {
+app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
   res.status(error.code || 500);
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   console.log('A user connected');
 
   socket.on('redis-update', (data) => {

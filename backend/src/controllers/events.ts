@@ -1,10 +1,21 @@
+import { Request, Response, NextFunction } from 'express';
+
 import { validationResult } from 'express-validator';
+import HttpError from '../utils/http-error';
+import redis from '../lib/redis-client';
 
-import HttpError from '../utils/http-error.js';
-import redis from '../lib/redis-client.js';
+interface Event {
+  entryTimeStamp: string;
+  carImageLocation: string;
+  nextAvailableParkingSlot: string | null;
+}
 
-export const getEvents = async (req, res, next) => {
-  let events = {};
+export const getEvents = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  let events: Record<string, Event> = {};
 
   try {
     // get all the keys and its corresponding value from redis
@@ -15,8 +26,8 @@ export const getEvents = async (req, res, next) => {
 
       for (const key of keys) {
         if (key !== 'availableSlots') {
-          value = await redis.get(key);
-          events[key] = JSON.parse(value);
+          const value = await redis.get(key);
+          events[key] = JSON.parse(value!) as Event;
         } else {
           console.log(`Unknown key`);
         }
@@ -38,7 +49,11 @@ export const getEvents = async (req, res, next) => {
   res.json({ events: events });
 };
 
-export const createEvent = async (req, res, next) => {
+export const createEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const io = req.io;
   const errors = validationResult(req);
 
@@ -54,7 +69,7 @@ export const createEvent = async (req, res, next) => {
 
   const nextAvailableParkingSlot = await getNextAvailableParkingSlot();
   console.log('next available slot: ', nextAvailableParkingSlot);
-  const createdEvent = {
+  const createdEvent: Event = {
     entryTimeStamp,
     carImageLocation: '/upload/test.jpg',
     nextAvailableParkingSlot,
@@ -67,8 +82,13 @@ export const createEvent = async (req, res, next) => {
     console.log('when adding the event to the db: ', response);
 
     // book the slot
-    const result = await redis.srem('availableSlots', nextAvailableParkingSlot);
-    console.log('when booking a slot: ', result);
+    if (nextAvailableParkingSlot) {
+      const result = await redis.srem(
+        'availableSlots',
+        nextAvailableParkingSlot
+      );
+      console.log('when booking a slot: ', result);
+    }
 
     io.emit('redis-update', { plateNumber, ...createdEvent });
   } catch (err) {
@@ -80,7 +100,7 @@ export const createEvent = async (req, res, next) => {
   res.status(201).json({ event: createdEvent });
 };
 
-const getNextAvailableParkingSlot = async () => {
+const getNextAvailableParkingSlot = async (): Promise<string | null> => {
   const members = await redis.smembers('availableSlots');
-  return members.length > 0 ? members[0] : null;
+  return members.length > 0 ? members[0] : '';
 };

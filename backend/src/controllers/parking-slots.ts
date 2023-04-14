@@ -1,11 +1,18 @@
-import redis from '../lib/redis-client.js';
-import { NUM_PARKING_SLOTS } from '../constants/index.js';
+import { Request, Response, NextFunction } from 'express';
 
-export const getAvailableParkingSlots = async (req, res, next) => {
-  let availableParkingSlots = [];
+import redis from '../lib/redis-client';
+import HttpError from '../utils/http-error';
+import { NUM_PARKING_SLOTS } from '../constants';
+
+export const getAvailableParkingSlots = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  let availableParkingSlots: number[] = [];
   try {
     const values = await redis.smembers('availableSlots');
-    availableParkingSlots = values;
+    availableParkingSlots = values.map((value: string) => parseInt(value, 10));
     console.log(availableParkingSlots);
   } catch (error) {
     console.error('Error fetching set values:', error);
@@ -14,12 +21,19 @@ export const getAvailableParkingSlots = async (req, res, next) => {
   res.json({ availableParkingSlots });
 };
 
-export const resetParkingSlots = async (req, res, next) => {
+export const resetParkingSlots = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const io = req.io;
 
-  const addValueToSet = async (setName, value) => {
+  const addValueToSet = async (
+    setName: string,
+    value: number
+  ): Promise<number> => {
     try {
-      const result = await redis.sadd(setName, value);
+      const result = await redis.sadd(setName, value.toString());
       console.log(`${result} value added to set ${setName}`);
       return result;
     } catch (err) {
@@ -27,8 +41,9 @@ export const resetParkingSlots = async (req, res, next) => {
       throw err;
     }
   };
+
   for (let i = 1; i <= NUM_PARKING_SLOTS; i++) {
-    addValueToSet('availableSlots', i);
+    await addValueToSet('availableSlots', i);
   }
 
   io.emit('redis-update', { message: 'Available Slots resetted' });
@@ -36,7 +51,11 @@ export const resetParkingSlots = async (req, res, next) => {
   res.status(201).json({ message: 'Parking Slots resetted successfully' });
 };
 
-export const bookSlot = async (req, res, next) => {
+export const bookSlot = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const io = req.io;
   const { id } = req.params;
   console.log('Id to be removed', id);
