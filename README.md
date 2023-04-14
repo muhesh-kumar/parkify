@@ -2,10 +2,15 @@
 
 ## Tech Stack
 
-- ReactJS
+- Vite
 - TypeScript
 - TailwindCSS
-- Vite
+- ReactJS
+- Jotai
+- SocketIO
+- NodeJS
+- ExpressJS
+- Redis
 
 ## Testing the API:
 
@@ -18,7 +23,3 @@
 ## Design
 
 - https://cdn.dribbble.com/users/4812501/screenshots/17654303/media/63f9d8c7378c19367e44a4cde3d8420b.png?compress=1&resize=1600x1200&vertical=top
-
-```
-
-```
