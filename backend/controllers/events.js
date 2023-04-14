@@ -1,9 +1,9 @@
-const { validationResult } = require('express-validator');
+import { validationResult } from 'express-validator';
 
-const HttpError = require('../utils/http-error');
-const redis = require('../lib/redis-client');
+import HttpError from '../utils/http-error.js';
+import redis from '../lib/redis-client.js';
 
-const getEvents = async (req, res, next) => {
+export const getEvents = async (req, res, next) => {
   let events = {};
 
   try {
@@ -38,7 +38,7 @@ const getEvents = async (req, res, next) => {
   res.json({ events: events });
 };
 
-const createEvent = async (req, res, next) => {
+export const createEvent = async (req, res, next) => {
   const io = req.io;
   const errors = validationResult(req);
 
@@ -84,6 +84,3 @@ const getNextAvailableParkingSlot = async () => {
   const members = await redis.smembers('availableSlots');
   return members.length > 0 ? members[0] : null;
 };
-
-exports.getEvents = getEvents;
-exports.createEvent = createEvent;

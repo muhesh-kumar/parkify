@@ -1,11 +1,11 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const { getEvents, createEvent } = require('../controllers/events');
-const eventValidations = require('../validations/events');
-const fileUpload = require('../middlewares/file-upload');
+import { getEvents, createEvent } from '../controllers/events.js';
+import eventValidations from '../validations/events.js';
+import fileUpload from '../middlewares/file-upload.js';
 
 router.get('/', getEvents);
 router.post('/', fileUpload.single('image'), eventValidations, createEvent);
 
-module.exports = router;
+export default router;

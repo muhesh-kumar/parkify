@@ -1,7 +1,7 @@
-const redis = require('../lib/redis-client');
-const { NUM_PARKING_SLOTS } = require('../../common/constants');
+import redis from '../lib/redis-client.js';
+import { NUM_PARKING_SLOTS } from '../constants/index.js';
 
-const getAvailableParkingSlots = async (req, res, next) => {
+export const getAvailableParkingSlots = async (req, res, next) => {
   let availableParkingSlots = [];
   try {
     const values = await redis.smembers('availableSlots');
@@ -14,7 +14,7 @@ const getAvailableParkingSlots = async (req, res, next) => {
   res.json({ availableParkingSlots });
 };
 
-const resetParkingSlots = async (req, res, next) => {
+export const resetParkingSlots = async (req, res, next) => {
   const io = req.io;
 
   const addValueToSet = async (setName, value) => {
@@ -36,7 +36,7 @@ const resetParkingSlots = async (req, res, next) => {
   res.status(201).json({ message: 'Parking Slots resetted successfully' });
 };
 
-const bookSlot = async (req, res, next) => {
+export const bookSlot = async (req, res, next) => {
   const io = req.io;
   const { id } = req.params;
   console.log('Id to be removed', id);
@@ -57,7 +57,3 @@ const bookSlot = async (req, res, next) => {
     return next(error);
   }
 };
-
-exports.resetParkingSlots = resetParkingSlots;
-exports.getAvailableParkingSlots = getAvailableParkingSlots;
-exports.bookSlot = bookSlot;

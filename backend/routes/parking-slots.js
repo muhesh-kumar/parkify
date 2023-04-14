@@ -1,14 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
-const {
+import {
   resetParkingSlots,
   getAvailableParkingSlots,
   bookSlot,
-} = require('../controllers/parking-slots');
+} from '../controllers/parking-slots.js';
 
 router.get('/', getAvailableParkingSlots);
 router.post('/', resetParkingSlots);
 router.patch('/:id', bookSlot);
 
-module.exports = router;
+export default router;

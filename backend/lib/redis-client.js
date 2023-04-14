@@ -1,7 +1,9 @@
-require('dotenv').config();
-const Redis = require('ioredis');
+import dotenv from 'dotenv';
+import Redis from 'ioredis';
 
-module.exports = new Redis({
+dotenv.config();
+
+export default new Redis({
   password: process.env.REDIS_PASSWORD,
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,

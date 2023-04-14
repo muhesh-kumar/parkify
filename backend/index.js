@@ -1,15 +1,16 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const path = require('path');
-const http = require('http');
-const express = require('express');
-const { Server } = require('socket.io');
-const bodyParser = require('body-parser');
+import path from 'path';
+import http from 'http';
+import express from 'express';
+import { Server } from 'socket.io';
+import bodyParser from 'body-parser';
 
-const HttpError = require('./utils/http-error');
-const eventRoutes = require('./routes/events');
-const parkingSlotsRoutes = require('./routes/parking-slots');
-const redis = require('./lib/redis-client');
+import HttpError from './utils/http-error.js';
+import eventRoutes from './routes/events.js';
+import parkingSlotsRoutes from './routes/parking-slots.js';
+import redis from './lib/redis-client.js';
 
 const app = express();
 const server = http.createServer(app);
