@@ -15,7 +15,7 @@ const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
     <div
       className={cn(
         'w-5 h-7 rounded-[5px]',
-        !availableSlots.has(String(id)) ? 'bg-selected' : 'bg-fontSelected'
+        !availableSlots.has(id) ? 'bg-selected' : 'bg-fontSelected'
       )}
     ></div>
   );
