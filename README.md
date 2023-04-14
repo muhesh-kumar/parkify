@@ -1,4 +1,18 @@
-# Parkify
+<div align="center">
+  <img alt="Logo" src="./images/logo.png" height="75" />
+</div>
+<h1 align="center">
+   Parkify
+</h1>
+<p align="center">
+An IoT based Smart Parking System made for the course CSE3062
+</p>
+
+<div>
+  <img alt="Dashboard" src="./images/dashboard.jpeg" />
+  <img alt="Real-Time Logs" src="./images/logs.jpeg" />
+  <img alt="Statistics" src="./images/stats.jpeg" />
+</div>
 
 ## Tech Stack
 
