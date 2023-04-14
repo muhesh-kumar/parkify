@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 
+import { Request } from '../types';
 import { validationResult } from 'express-validator';
 import HttpError from '../utils/http-error';
 import redis from '../lib/redis-client';

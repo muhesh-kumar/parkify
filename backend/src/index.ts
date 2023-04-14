@@ -4,11 +4,11 @@ import path from 'path';
 dotenv.config();
 
 import http from 'http';
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Response, NextFunction } from 'express';
 import { Server, Socket } from 'socket.io';
 import bodyParser from 'body-parser';
 
-// import { CustomRequest } from './types/';
+import { Request } from './types';
 import HttpError from './utils/http-error';
 import eventRoutes from './routes/events';
 import parkingSlotsRoutes from './routes/parking-slots';
@@ -91,5 +91,3 @@ io.on('connection', (socket: Socket) => {
 server.listen(3000, () => {
   console.log('Server started on port 3000');
 });
-
-// curl -X POST -F 'file=frame.jpg' -F "entryTimeStamp=19:07:23" http://localhost:3000/api/events

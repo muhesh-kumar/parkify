@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 
+import { Request } from '../types';
 import redis from '../lib/redis-client';
 import HttpError from '../utils/http-error';
 import { NUM_PARKING_SLOTS } from '../constants';
