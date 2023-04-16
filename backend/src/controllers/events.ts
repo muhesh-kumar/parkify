@@ -57,6 +57,7 @@ export const createEvent = async (
 ): Promise<void> => {
   const io = req.io;
   const errors = validationResult(req);
+  console.log(req.body);
 
   if (!errors.isEmpty()) {
     const error = new HttpError('Invalid data provided', 422);
