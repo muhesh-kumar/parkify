@@ -2,7 +2,7 @@
   <img alt="Logo" src="./images/logo.png" height="75" />
 </div>
 <h1 align="center">
-   Parkify
+   <a href="parkify.vercel.app"> parkify.vercel.app</a>
 </h1>
 <p align="center">
 An IoT based Smart Parking System made for the course CSE3062
