@@ -59,6 +59,9 @@ const deleteAllKeys = async () => {
 };
 // deleteAllKeys();
 
+app.get('/api', (req: Request, res: Response, next: NextFunction) => {
+  res.send({ status: 'ok' });
+});
 app.use('/api/events', eventRoutes);
 app.use('/api/parking-slots', parkingSlotsRoutes);
 

@@ -6,6 +6,7 @@ import SectionLayout from './section-layout';
 
 import cn from '../utils/classnames';
 import { emails, carManufacturers } from '../data/';
+import { API_URL } from '../constants';
 
 type Log = {
   email: string;
@@ -14,7 +15,7 @@ type Log = {
   timeOfEntry: string;
 };
 
-const socket = io('http://localhost:3000');
+const socket = io(API_URL);
 
 const Logs = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -22,7 +23,7 @@ const Logs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const result = await fetch('http://localhost:3000/api/events');
+        const result = await fetch(`${API_URL}/api/events`);
         const data = await result.json();
         const newLogs: Log[] = Object.keys(data.events).map((key) => ({
           email: emails[Math.floor(Math.random() * emails.length)],

@@ -30,7 +30,7 @@ export const getEvents = async (
           const value = await redis.get(key);
           events[key] = JSON.parse(value!) as Event;
         } else {
-          console.log(`Unknown key`);
+          // console.log(`Unknown key`);
         }
       }
     } while (cursor !== '0');
@@ -57,7 +57,7 @@ export const createEvent = async (
 ): Promise<void> => {
   const io = req.io;
   const errors = validationResult(req);
-  console.log(req.body);
+  console.log('Entered POST Request: ', req.body);
 
   if (!errors.isEmpty()) {
     const error = new HttpError('Invalid data provided', 422);
@@ -65,6 +65,7 @@ export const createEvent = async (
   }
 
   const { entryTimeStamp } = req.body;
+  console.log(entryTimeStamp);
   // TODO: receive it from the RPi itself
   const plateNumber = Math.floor(Math.random() * 1000000000).toString(36);
   // const plateNumber = 'ABC-123-WW-45'; // TODO: receive it from the RPi itself

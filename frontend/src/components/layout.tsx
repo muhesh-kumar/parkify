@@ -1,4 +1,5 @@
 import { FC, ReactElement } from 'react';
+
 import Navbar from './navbar';
 
 type LayoutProps = {

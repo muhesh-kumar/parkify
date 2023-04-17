@@ -1,18 +1,20 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import io from 'socket.io-client';
-import { availableSlotsAtom } from '../state/';
 
 import SectionLayout from './section-layout';
 import ParkingSlot from './parking-slot';
 import AvailabilityStatus from './availability-status';
 
+import { availableSlotsAtom } from '../state/';
+import { API_URL } from '../constants/';
+
 const ParkingSlotsAvailability = () => {
-  const socket = io('http://localhost:3000');
-  const [availableSlots, setAvailableSlots] = useAtom(availableSlotsAtom);
+  const socket = io(API_URL);
+  const [_, setAvailableSlots] = useAtom(availableSlotsAtom);
 
   const getAvailabilitySlots = async () => {
-    const response = await fetch('http://localhost:3000/api/parking-slots');
+    const response = await fetch(`${API_URL}/api/parking-slots`);
     const availableSlots = await response.json();
     console.log('availableSlots: ', availableSlots.availableParkingSlots);
     setAvailableSlots(new Set(availableSlots.availableParkingSlots));
@@ -154,7 +156,7 @@ const ParkingSlotsAvailability = () => {
       </SectionLayout>
 
       {/* Right side */}
-      <SectionLayout width="30%">
+      <SectionLayout width="30%" isCentered>
         <AvailabilityStatus />
       </SectionLayout>
     </div>
