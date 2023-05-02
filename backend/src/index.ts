@@ -8,11 +8,11 @@ import express, { Response, NextFunction } from 'express';
 import { Server, Socket } from 'socket.io';
 import bodyParser from 'body-parser';
 
-import { Request } from './types';
-import HttpError from './utils/http-error';
-import eventRoutes from './routes/events';
-import parkingSlotsRoutes from './routes/parking-slots';
-import redis from './lib/redis-client';
+import { Request } from 'types';
+import HttpError from '@utils/http-error';
+import eventRoutes from '@routes/events';
+import parkingSlotsRoutes from '@routes/parking-slots';
+import redis from '@lib/redis-client';
 
 const app = express();
 const server = http.createServer(app);

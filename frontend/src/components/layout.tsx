@@ -1,6 +1,6 @@
 import { FC, ReactElement } from 'react';
 
-import Navbar from './navbar';
+import Navbar from '@components/navbar';
 
 type LayoutProps = {
   children: ReactElement | ReactElement[] | boolean;

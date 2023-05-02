@@ -1,5 +1,16 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@controllers/*": ["controllers/*"],
+      "@constants/*": ["constants/*"],
+      "@utils/*": ["utils/*"],
+      "@lib/*": ["lib/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@routes/*": ["routes/*"],
+      "types/*": ["types/*"],
+      "@validations/*": ["validations/*"]
+    },
     "target": "ES6",
     "module": "CommonJS",
     "esModuleInterop": true,

@@ -1,11 +1,11 @@
 import { useAtom } from 'jotai';
 
-import Layout from './components/layout';
-import Logs from './components/logs';
-import ParkingSlotsAvailability from './components/parking-slots-availability';
-import Statistics from './components/statistics';
+import Layout from '@components/layout';
+import Logs from '@components/logs';
+import ParkingSlotsAvailability from '@components/parking-slots-availability';
+import Statistics from '@components/statistics';
 
-import { selectedNavOptionAtom } from './state';
+import { selectedNavOptionAtom } from '@state/index';
 
 const App = () => {
   const [selectedNavOption] = useAtom(selectedNavOptionAtom);

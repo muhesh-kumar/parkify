@@ -7,9 +7,9 @@ import {
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
 
-import { selectedNavOptionAtom } from '../state';
-import cn from '../utils/classnames';
-import Logo from '../assets/logo.png';
+import { selectedNavOptionAtom } from '@state/index';
+import cn from '@utils/classnames';
+import Logo from '@assets/logo.png';
 
 const navOptions = [
   {

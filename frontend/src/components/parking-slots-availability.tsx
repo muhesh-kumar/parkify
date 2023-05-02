@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import io from 'socket.io-client';
 
-import SectionLayout from './section-layout';
-import ParkingSlot from './parking-slot';
-import AvailabilityStatus from './availability-status';
+import SectionLayout from '@components/section-layout';
+import ParkingSlot from '@components/parking-slot';
+import AvailabilityStatus from '@components/availability-status';
 
-import { availableSlotsAtom } from '../state/';
-import { API_URL } from '../constants/';
+import { availableSlotsAtom } from '@state/index';
+import { API_URL } from '@constants/index';
 
 const ParkingSlotsAvailability = () => {
   const socket = io(API_URL);

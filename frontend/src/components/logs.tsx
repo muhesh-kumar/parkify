@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import io from 'socket.io-client';
 
-import SectionLayout from './section-layout';
+import SectionLayout from '@components/section-layout';
 
-import cn from '../utils/classnames';
-import { emails, carManufacturers } from '../data/';
-import { API_URL } from '../constants';
+import cn from '@utils/classnames';
+import { emails, carManufacturers } from '@data/index';
+import { API_URL } from '@constants/index';
 
 type Log = {
   email: string;

@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 
-import { availableSlotsAtom } from '../state';
+import { availableSlotsAtom } from '@state/index';
 
 const AvailabilityStatus = () => {
   const [availableSlots] = useAtom(availableSlotsAtom);

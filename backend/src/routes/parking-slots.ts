@@ -5,7 +5,7 @@ import {
   resetParkingSlots,
   getAvailableParkingSlots,
   bookSlot,
-} from '../controllers/parking-slots';
+} from '@controllers/parking-slots';
 
 router.get('/', getAvailableParkingSlots);
 router.post('/', resetParkingSlots);
