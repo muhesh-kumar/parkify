@@ -12,7 +12,7 @@ import { Request } from 'types';
 import HttpError from '@utils/http-error';
 import eventRoutes from '@routes/events';
 import parkingSlotsRoutes from '@routes/parking-slots';
-import redis from '@lib/redis-client';
+import redisKeysRoutes from '@routes/redis-keys';
 
 const app = express();
 const server = http.createServer(app);
@@ -45,25 +45,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// delete all the keys in a redis using ioredis package
-const deleteAllKeys = async () => {
-  try {
-    const keys = await redis.keys('*');
-    if (keys.length > 0) {
-      await redis.del(keys);
-    }
-  } catch (error) {
-    console.error('Error deleting keys:', error);
-    throw new Error('Error deleting keys');
-  }
-};
-// deleteAllKeys();
-
 app.get('/api', (req: Request, res: Response, next: NextFunction) => {
   res.send({ status: 'ok' });
 });
 app.use('/api/events', eventRoutes);
 app.use('/api/parking-slots', parkingSlotsRoutes);
+app.use('/api/redis-keys', redisKeysRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError('could not find this route.', 404);
