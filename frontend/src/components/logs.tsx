@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import io from 'socket.io-client';
 
-import SectionLayout from '@components/section-layout';
-
 import cn from '@utils/classnames';
 import { emails, carManufacturers } from '@data/index';
 import { API_URL } from '@constants/index';
@@ -19,6 +17,7 @@ const socket = io(API_URL);
 
 const Logs = () => {
   const [logs, setLogs] = useState<Log[]>([]);
+  console.log(`API URL: ${API_URL}`);
 
   useEffect(() => {
     const fetchLogs = async () => {
