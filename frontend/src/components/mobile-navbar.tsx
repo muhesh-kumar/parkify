@@ -45,7 +45,7 @@ const MobileNavbar = () => {
 
   return (
     <div className="relative">
-      <div className="bg-secondaryBackground px-5 py-3 flex justify-between">
+      <div className="bg-secondaryBackground w-screen px-5 py-3 flex justify-between fixed z-2">
         {/* Logo */}
         <div className="flex gap-2 items-end justify-start">
           <img src={Logo} className="h-7 w-7 md:h-9 md:w-9" />
@@ -59,7 +59,7 @@ const MobileNavbar = () => {
           <img
             src={isOpen ? closeMenuIcon : hamBurgerMenuIcon}
             alt="Hamburger Menu"
-            className="inline md:hidden h-8 w-8"
+            className="inline md:hidden h-7 w-7"
           />
         </button>
       </div>
@@ -67,7 +67,9 @@ const MobileNavbar = () => {
       <div
         className={cn(
           isOpen ? 'flex flex-col gap-[50px]' : 'hidden',
-          'absolute rounded z-2 mt-[2px] h-[calc(100vh-54px)] bg-secondaryBackground px-5 py-10 w-[200px]'
+          /* top-[54px] because of the height of the navbar being 52px and 2px extra for gap between the navbar and the sidebar
+          100vh - 52px because the height of the navbar is 52px and we want the sidebar to take up the rest of the height */
+          'fixed rounded-md z-2 top-[54px] h-[calc(100vh-52px)] */ bg-secondaryBackground px-5 py-10 w-[250px]'
         )}
       >
         <div>

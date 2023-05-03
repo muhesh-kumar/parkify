@@ -138,8 +138,8 @@ const ParkingSlotsAvailability = () => {
   );
 
   return (
-    <div className="flex gap-5">
-      <SectionLayout width="70%">
+    <div className="flex flex-col md:flex-row gap-5">
+      <SectionLayout>
         <h2 className="text-md font-bold">Parking Slots Availability</h2>
 
         {/* Left side */}
