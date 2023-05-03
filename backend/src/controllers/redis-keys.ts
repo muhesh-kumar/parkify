@@ -1,9 +1,9 @@
-import redis from '@lib/redis-client';
 import { Response, NextFunction } from 'express';
 
+import redis from 'db';
 import { Request } from 'types';
 
-export const deleteAllKeys = async (
+export const deleteKeys = async (
   req: Request,
   res: Response,
   next: NextFunction

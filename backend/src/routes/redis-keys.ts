@@ -1,8 +1,8 @@
 import express from 'express';
 const router = express.Router();
 
-import { deleteAllKeys } from '@controllers/redis-keys';
+import { deleteKeys } from '@controllers/redis-keys';
 
-router.delete('/', deleteAllKeys);
+router.delete('/', deleteKeys);
 
 export default router;
