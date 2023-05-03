@@ -66,7 +66,7 @@ const Logs = () => {
   }, [socket]);
 
   return (
-    <SectionLayout>
+    <div className="rounded-2xl py-3 px-4 w-full bg-secondaryBackground flex flex-col gap-4 min-w-[800px]">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-md font-bold">Real Time Logs</h2>
@@ -74,14 +74,14 @@ const Logs = () => {
           <MagnifyingGlassIcon className="w-[14px] h-[14px]" />
           <input
             type="text"
-            className="text-xs appearance-none outline-none border-none bg-primaryBackground placeholder-[#777777]"
+            className="text-xs appearance-none outline-none border-none bg-primaryBackground placeholder-[#777777] w-full"
             placeholder="Search"
           />
         </div>
       </div>
 
       {/* Logs Table */}
-      <div className="bg-primaryBackground rounded-xl flex flex-col font-semibold text-xs max-h-[520px]">
+      <div className="bg-primaryBackground rounded-xl flex flex-col font-semibold text-xs max-h-[520px] overflow-x-auto">
         <div className="border-b border-b-[#3E3E3E] flex bg-selected text-fontSelected rounded-t-xl py-6 px-3">
           <p className="w-1/4">Name/Email</p>
           <p className="w-1/4">Car Manufacturer</p>
@@ -107,7 +107,7 @@ const Logs = () => {
           })}
         </div>
       </div>
-    </SectionLayout>
+    </div>
   );
 };
 

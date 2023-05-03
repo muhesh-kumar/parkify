@@ -55,14 +55,14 @@ const ParkingSlotsAvailability = () => {
     if (i < len - 1) row4.push(<ParkingSlot id={currId++} />);
   }
   const row1Container = (
-    <div className="flex justify-between">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col md:flex-row gap-5 md:justify-between">
+      <div className="flex flex-col gap-4 items-center md:items-start">
         <div className="flex gap-2">{row1}</div>
         <div className="flex gap-2">{row2}</div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 items-center md:items-start">
         <div className="flex gap-2">{row3}</div>
-        <div className="ml-auto flex gap-2">{row4}</div>
+        <div className="md:ml-auto flex gap-2">{row4}</div>
       </div>
     </div>
   );
@@ -80,14 +80,14 @@ const ParkingSlotsAvailability = () => {
     if (i < len - 1) row24.push(<ParkingSlot id={currId++} />);
   }
   const row2Container = (
-    <div className="flex justify-between">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col md:flex-row gap-5 md:justify-between">
+      <div className="flex flex-col gap-4 items-center md:items-start">
         <div className="flex gap-2">{row21}</div>
         <div className="flex gap-2">{row22}</div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 items-center md:items-start">
         <div className="flex gap-2">{row23}</div>
-        <div className="ml-auto flex gap-2">{row24}</div>
+        <div className="md:ml-auto flex gap-2">{row24}</div>
       </div>
     </div>
   );
@@ -109,7 +109,7 @@ const ParkingSlotsAvailability = () => {
     midRow6.push(<ParkingSlot id={currId++} />);
   }
   const midRowContainer = (
-    <div className="flex justify-between">
+    <div className="flex flex-col md:flex-row gap-5 md:justify-between">
       <div className="flex flex-col gap-4 items-center">
         <div className="flex gap-2">{midRow1}</div>
         <div className="flex gap-2">{midRow2}</div>
@@ -132,33 +132,31 @@ const ParkingSlotsAvailability = () => {
   }
   const bottomRowContainer = (
     <div className="flex flex-col gap-4 items-center">
-      <div className="flex gap-2">{bottomRow1}</div>
-      <div className="flex gap-2">{bottomRow2}</div>
+      <div className="flex gap-2 flex-wrap justify-center">{bottomRow1}</div>
+      <div className="flex gap-2 flex-wrap justify-center">{bottomRow2}</div>
     </div>
   );
 
   return (
-    <div className="flex flex-col md:flex-row gap-5">
-      <SectionLayout>
-        <h2 className="text-md font-bold">Parking Slots Availability</h2>
+    <div className="flex md:flex-row flex-col gap-5">
+      <div className="flex flex-col gap-5 rounded-2xl py-3 px-4 bg-secondaryBackground max-w-full md:max-w-full h-full md:w-[75%] ">
+        <h2 className="text-md font-bold text-center">
+          Parking Slots Availability
+        </h2>
 
         {/* Left side */}
-        <div className="flex flex-col gap-20">
+        <div className="flex flex-col gap-10 md:gap-20">
           {row1Container}
           {midRowContainer}
           {row2Container}
           {bottomRowContainer}
         </div>
-        {/* <div className="flex gap-2">
-          <ParkingSlot isAvailable />
-          <ParkingSlot />
-        </div> */}
-      </SectionLayout>
+      </div>
 
       {/* Right side */}
-      <SectionLayout width="30%" isCentered>
+      <div className="flex flex-col justify-center rounded-2xl py-3 px-4 bg-secondaryBackground h-full md:w-[25%]">
         <AvailabilityStatus />
-      </SectionLayout>
+      </div>
     </div>
   );
 };
