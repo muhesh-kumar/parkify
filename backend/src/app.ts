@@ -1,11 +1,10 @@
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config();
-
 import express, { Response, NextFunction } from 'express';
-import { Server } from 'socket.io';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+
 import bodyParser from 'body-parser';
+import { Server } from 'socket.io';
+import dotenv from 'dotenv';
 
 import { Request } from 'types';
 import { io } from 'server';
@@ -14,7 +13,40 @@ import eventRoutes from '@routes/events';
 import parkingSlotsRoutes from '@routes/parking-slots';
 import redisKeysRoutes from '@routes/redis-keys';
 
+dotenv.config();
 const app = express();
+
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'Parkify REST API',
+    version: '1.0.0',
+    description:
+      'This is a REST API application made with Express. It retrieves data from a remote RedisDB.',
+    license: {
+      name: 'Licensed Under MIT',
+      url: 'https://spdx.org/licenses/MIT.html',
+    },
+    contact: {
+      name: 'Muhesh Kumar',
+      url: 'https://github.com/muhesh-kumar',
+    },
+  },
+  servers: [
+    {
+      url: 'http://localhost:3000',
+      description: 'Development server',
+    },
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  // Paths to files containing OpenAPI definitions
+  apis: ['./src/routes/*.ts'],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -38,15 +70,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.send({ message: 'Server is up and running!!!' });
-});
-app.get('/api', (req: Request, res: Response, next: NextFunction) => {
-  res.send({ message: 'Parkify API up and running!!!' });
-});
 app.use('/api/events', eventRoutes);
 app.use('/api/parking-slots', parkingSlotsRoutes);
 app.use('/api/redis-keys', redisKeysRoutes);
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError('could not find this route.', 404);
