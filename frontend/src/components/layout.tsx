@@ -19,7 +19,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
 
       <div className="flex flex-col gap-5 md:hidden font-poppins text-[#EBEBEB] overflow-y-hidden w-screen bg-primaryBackground">
         <MobileNavbar />
-        <div className="mt-[52px] px-5 h-full"> {children}</div>
+        <div className="mt-[52px] px-5 h-full min-h-screen"> {children}</div>
       </div>
     </>
   );

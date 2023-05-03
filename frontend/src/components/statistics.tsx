@@ -11,7 +11,7 @@ function Statistics() {
     };
   });
   return (
-    <div>
+    <div className="min-w-[1500px] md:min-w-full">
       <CalendarHeatmap
         startDate={shiftDate(today, -365)} // last 1 year data
         endDate={today}
