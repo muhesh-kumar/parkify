@@ -19,23 +19,21 @@ export const getEvents = async (
   let events: Record<string, Event> = {};
 
   try {
-    // get all the keys and its corresponding value from redis
+    const keys = [];
     let cursor = '0';
-    do {
-      const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', '*');
-      cursor = nextCursor;
 
-      for (const key of keys) {
-        if (key !== 'availableSlots') {
-          const value = await redis.get(key);
-          events[key] = JSON.parse(value!) as Event;
-        } else {
-          // console.log(`Unknown key`);
-        }
-      }
+    do {
+      const res = await redis.scan(cursor);
+      cursor = res[0];
+      const batchKeys = res[1];
+      keys.push(...batchKeys);
     } while (cursor !== '0');
 
-    console.log('events: ', events);
+    const values = await redis.mget(...keys);
+    keys.forEach((key, i) => {
+      if (key !== 'availableSlots')
+        events[key] = JSON.parse(values[i]!) as Event;
+    });
   } catch (err) {
     console.log(err);
     const error = new HttpError('Unable to fetch the events', 500);

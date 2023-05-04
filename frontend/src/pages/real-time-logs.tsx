@@ -19,11 +19,13 @@ const socket = io(API_URL);
 const RealTimeLogs = () => {
   const [logs, setLogs] = useState<Log[]>([]);
 
+  // Fetch logs from the API, the first time the component is rendered
   useEffect(() => {
     const fetchLogs = async () => {
       try {
         const result = await fetch(`${API_URL}/api/events`);
         const data = await result.json();
+        console.log('Data', data);
         const newLogs: Log[] = Object.keys(data.events).map((key) => ({
           email: emails[Math.floor(Math.random() * emails.length)],
           carManufacturer:
@@ -43,7 +45,9 @@ const RealTimeLogs = () => {
     fetchLogs();
   }, []);
 
+  // Listen to redis-update socket event and update the logs
   useEffect(() => {
+    // TODO: Create API contracts and give types to the data
     const eventListener = (data: any) => {
       const newData = {
         email: emails[Math.floor(Math.random() * emails.length)],
