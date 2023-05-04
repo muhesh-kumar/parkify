@@ -132,7 +132,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="flex md:flex-row flex-col gap-5">
+    <div className="flex md:flex-row flex-col-reverse gap-5">
       <div className="flex flex-col gap-5 rounded-2xl py-3 px-4 bg-secondaryBackground max-w-full md:max-w-full h-full md:w-[75%] ">
         <h2 className="text-md font-bold text-center">
           Parking Slots Availability

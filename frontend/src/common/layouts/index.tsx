@@ -13,7 +13,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       {/* Larger screens */}
       <div className="hidden md:flex font-poppins text-[#EBEBEB] overflow-y-hidden">
         <Navbar />
-        <div className="bg-primaryBackground w-screen p-8 flex flex-col gap-5">
+        <div className="bg-primaryBackground w-screen px-10 justify-center flex flex-col gap-5">
           {children}
         </div>
       </div>
@@ -21,7 +21,10 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       {/* Smaller screens */}
       <div className="flex flex-col gap-5 md:hidden font-poppins text-[#EBEBEB] overflow-y-hidden w-screen bg-primaryBackground">
         <MobileNavbar />
-        <div className="mt-[52px] px-5 h-full min-h-screen"> {children}</div>
+        <div className="mt-[52px] mb-[18px] px-5 h-full min-h-screen">
+          {' '}
+          {children}
+        </div>
       </div>
     </>
   );
