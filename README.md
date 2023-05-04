@@ -15,15 +15,15 @@ An IoT based Smart Parking System made for the course CSE3062
   <img alt="Statistics" src="./images/stats.jpeg" />
   
   <!-- Mobile views -->
-  <div style="display:flex; gap:10px; justify-content:center">
-    <img alt="Dashboard in mobile view" src="./images/mobile-dashboard.png" height="300px"/>
-    <img alt="Dashboard in mobile view 2" src="./images/mobile-dashboard2.png" height="300px"/>
+  <div align="center" style="display:flex; gap:10px; justify-content:center">
+    <img alt="Dashboard in mobile view" src="./images/mobile-dashboard.png" height="500px"/>
+    <img alt="Dashboard in mobile view 2" src="./images/mobile-dashboard2.png" height="500px"/>
+    <img alt="Dashboard in mobile view with sidebar" src="./images/mobile-dashboard-with-sidebar.png" height="500px"/>
   </div>
 
-  <div style="display:flex; gap:10px; justify-content:center">
-    <img alt="Dashboard in mobile view with sidebar" src="./images/mobile-dashboard-with-sidebar.png" height="300px"/>
-    <img alt="Logs in mobile view" src="./images/mobile-logs.png" height="300px"/>
-    <img alt="Logs in mobile view with sidebar" src="./images/mobile-logs-with-sidebar.png" height="300px"/>
+  <div align="center" style="display:flex; gap:10px; justify-content:center">
+    <img alt="Logs in mobile view" src="./images/mobile-logs.png" height="500px"/>
+    <img alt="Logs in mobile view with sidebar" src="./images/mobile-logs-with-sidebar.png" height="500px"/>
   </div>
 </div>
 
