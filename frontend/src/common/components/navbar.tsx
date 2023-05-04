@@ -50,7 +50,7 @@ const Navbar = () => {
             <div
               key={uuidv4()}
               className={cn(
-                'flex gap-2 items-center text-xs py-2 px-4',
+                'flex gap-2 items-center text-xs py-2 px-4 cursor-pointer',
                 selectedNavOption == option.name
                   ? 'text-fontSelected bg-selected font-semibold rounded-[12.5px]'
                   : ''

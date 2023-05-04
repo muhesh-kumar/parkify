@@ -41,7 +41,10 @@ const MobileNavbar = () => {
 
   return (
     <div className="relative">
-      <div className="bg-secondaryBackground w-screen px-5 py-3 flex justify-between fixed z-2">
+      <div
+        className=" w-screen px-5 py-3 flex justify-between fixed z-50 backdrop-blur transition-colors duration-500 border-b border-secondaryBackground/10 bg-secondaryBackground/50 supports-backdrop-blur:bg-secondaryBackground/50 
+      "
+      >
         {/* Logo */}
         <div className="flex gap-2 items-end justify-start">
           <img src={Logo} className="h-7 w-7 md:h-9 md:w-9" />
@@ -69,7 +72,7 @@ const MobileNavbar = () => {
                   open ? 'flex flex-col gap-[50px]' : 'hidden',
                   /* top-[54px] because of the height of the navbar being 52px and 2px extra for gap between the navbar and the sidebar
                     100vh - 60px because the height of the navbar is 52px, and we want the sidebar to take up the rest of the height */
-                  'fixed left-0 rounded-md z-2 top-[54px] h-[calc(100vh-52px)] bg-secondaryBackground px-5 py-10 w-[250px]'
+                  'fixed left-0 rounded-md z-2 top-[54px] h-[calc(100vh-52px)] px-5 py-10 w-[250px] backdrop-blur transition-colors duration-500 border-b border-secondaryBackground/10 bg-secondaryBackground/90 supports-backdrop-blur:bg-secondaryBackground/90'
                 )}
               >
                 <div>
@@ -78,7 +81,7 @@ const MobileNavbar = () => {
                       <div
                         key={uuidv4()}
                         className={cn(
-                          'flex gap-2 items-center text-xs py-2 px-4',
+                          'flex gap-2 items-center text-xs py-2 px-4 cursor-pointer',
                           selectedNavOption == option.name
                             ? 'text-fontSelected bg-selected font-semibold rounded-[12.5px]'
                             : ''
