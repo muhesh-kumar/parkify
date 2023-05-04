@@ -12,6 +12,7 @@ import HttpError from '@utils/http-error';
 import eventRoutes from '@routes/events';
 import parkingSlotsRoutes from '@routes/parking-slots';
 import redisKeysRoutes from '@routes/redis-keys';
+import otherRoutes from '@routes/other';
 
 dotenv.config();
 const app = express();
@@ -47,7 +48,6 @@ const options = {
 };
 
 const swaggerSpec = swaggerJSDoc(options);
-
 declare module 'express-serve-static-core' {
   interface Request {
     io: Server;
@@ -73,6 +73,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api/events', eventRoutes);
 app.use('/api/parking-slots', parkingSlotsRoutes);
 app.use('/api/redis-keys', redisKeysRoutes);
+app.use('/', otherRoutes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
