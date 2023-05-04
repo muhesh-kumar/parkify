@@ -1,38 +1,31 @@
 import { useEffect } from 'react';
 import { useAtom } from 'jotai';
 import io from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 
-import SectionLayout from '@components/section-layout';
-import ParkingSlot from '@components/parking-slot';
+import ParkingSlot from '@elements/parking-slot';
 import AvailabilityStatus from '@components/availability-status';
 
 import { availableSlotsAtom } from '@state/index';
 import { API_URL } from '@constants/index';
 
-const ParkingSlotsAvailability = () => {
+const Dashboard = () => {
   const socket = io(API_URL);
   const [_, setAvailableSlots] = useAtom(availableSlotsAtom);
 
   const getAvailabilitySlots = async () => {
     const response = await fetch(`${API_URL}/api/parking-slots`);
     const availableSlots = await response.json();
-    console.log('availableSlots: ', availableSlots.availableParkingSlots);
     setAvailableSlots(new Set(availableSlots.availableParkingSlots));
-    console.log(availableSlots);
   };
 
   useEffect(() => {
-    console.log('on page refresh, getting slots');
     getAvailabilitySlots();
   }, []);
 
+  // Handle incoming data
   useEffect(() => {
-    // Handle incoming data
-    const eventListener = (data: any) => {
-      console.log('a car slot is requested');
-      console.log('new incoming data: ', data);
-      getAvailabilitySlots();
-    };
+    const eventListener = (data: any) => getAvailabilitySlots();
     socket.on('redis-update', eventListener);
 
     return () => {
@@ -47,12 +40,12 @@ const ParkingSlotsAvailability = () => {
   let len = 10,
     currId = 1;
   for (let i = 0; i < len; i++) {
-    row1.push(<ParkingSlot id={currId++} />);
-    if (i < len - 1) row2.push(<ParkingSlot id={currId++} />);
+    row1.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    if (i < len - 1) row2.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   for (let i = 0; i < len; i++) {
-    row3.push(<ParkingSlot id={currId++} />);
-    if (i < len - 1) row4.push(<ParkingSlot id={currId++} />);
+    row3.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    if (i < len - 1) row4.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   const row1Container = (
     <div className="flex flex-col md:flex-row gap-5 md:justify-between">
@@ -72,12 +65,12 @@ const ParkingSlotsAvailability = () => {
     row23 = [],
     row24 = [];
   for (let i = 0; i < len; i++) {
-    row21.push(<ParkingSlot id={currId++} />);
-    if (i < len - 1) row22.push(<ParkingSlot id={currId++} />);
+    row21.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    if (i < len - 1) row22.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   for (let i = 0; i < len; i++) {
-    row23.push(<ParkingSlot id={currId++} />);
-    if (i < len - 1) row24.push(<ParkingSlot id={currId++} />);
+    row23.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    if (i < len - 1) row24.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   const row2Container = (
     <div className="flex flex-col md:flex-row gap-5 md:justify-between">
@@ -99,14 +92,14 @@ const ParkingSlotsAvailability = () => {
     midRow5 = [],
     midRow6 = [];
   for (let i = 0; i < len - 2; i++) {
-    if (i < len - 5) midRow1.push(<ParkingSlot id={currId++} />);
-    midRow2.push(<ParkingSlot id={currId++} />);
-    midRow3.push(<ParkingSlot id={currId++} />);
+    if (i < len - 5) midRow1.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    midRow2.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    midRow3.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   for (let i = 0; i < len - 2; i++) {
-    if (i < len - 5) midRow4.push(<ParkingSlot id={currId++} />);
-    midRow5.push(<ParkingSlot id={currId++} />);
-    midRow6.push(<ParkingSlot id={currId++} />);
+    if (i < len - 5) midRow4.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    midRow5.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    midRow6.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   const midRowContainer = (
     <div className="flex flex-col md:flex-row gap-5 md:justify-between">
@@ -127,8 +120,9 @@ const ParkingSlotsAvailability = () => {
     bottomRow2 = [];
   len = 25;
   for (let i = 0; i < len - 2; i++) {
-    if (i < len - 5) bottomRow1.push(<ParkingSlot id={currId++} />);
-    bottomRow2.push(<ParkingSlot id={currId++} />);
+    if (i < len - 5)
+      bottomRow1.push(<ParkingSlot id={currId++} key={uuidv4()} />);
+    bottomRow2.push(<ParkingSlot id={currId++} key={uuidv4()} />);
   }
   const bottomRowContainer = (
     <div className="flex flex-col gap-4 items-center">
@@ -161,4 +155,4 @@ const ParkingSlotsAvailability = () => {
   );
 };
 
-export default ParkingSlotsAvailability;
+export default Dashboard;

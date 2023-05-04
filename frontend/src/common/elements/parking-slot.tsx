@@ -17,7 +17,7 @@ const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
         'w-5 h-7 rounded-[5px]',
         !availableSlots.has(id) ? 'bg-selected' : 'bg-fontSelected'
       )}
-    ></div>
+    />
   );
 };
 

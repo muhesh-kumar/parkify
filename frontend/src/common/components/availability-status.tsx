@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai';
 
 import { availableSlotsAtom } from '@state/index';
+import { NUM_PARKING_SLOTS } from '@constants/index';
 
 const AvailabilityStatus = () => {
   const [availableSlots] = useAtom(availableSlotsAtom);
@@ -13,8 +14,7 @@ const AvailabilityStatus = () => {
       <div className="flex flex-col items-center border-fontSelected border-2 rounded-full p-5">
         <h1 className="font-bold text-xl">{availableSlots.size}</h1>
         <h2 className="text-sm">Out of</h2>
-        {/* TODO: need to change this */}
-        <h1 className="font-bold text-xl">162</h1>
+        <h1 className="font-bold text-xl">{NUM_PARKING_SLOTS}</h1>
       </div>
     </div>
   );

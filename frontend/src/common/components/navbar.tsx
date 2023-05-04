@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ChartPieIcon,
   RectangleGroupIcon,
@@ -47,6 +48,7 @@ const Navbar = () => {
         {navOptions.map((option) => {
           return (
             <div
+              key={uuidv4()}
               className={cn(
                 'flex gap-2 items-center text-xs py-2 px-4',
                 selectedNavOption == option.name

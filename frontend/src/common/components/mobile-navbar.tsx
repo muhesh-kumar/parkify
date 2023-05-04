@@ -7,6 +7,7 @@ import {
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
 import { Popover } from '@headlessui/react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { selectedNavOptionAtom } from '@state/index';
 import cn from '@utils/classnames';
@@ -75,6 +76,7 @@ const MobileNavbar = () => {
                   {navOptions.map((option) => {
                     return (
                       <div
+                        key={uuidv4()}
                         className={cn(
                           'flex gap-2 items-center text-xs py-2 px-4',
                           selectedNavOption == option.name

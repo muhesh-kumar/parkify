@@ -3,9 +3,12 @@
     "baseUrl": "./src",
     "paths": {
       "@assets/*": ["assets/*"],
-      "@components/*": ["components/*"],
+      "@components/*": ["common/components/*"],
+      "@elements/*": ["common/elements/*"],
+      "@layouts/*": ["common/layouts/*"],
       "@constants/*": ["constants/*"],
-      "@data/*": ["data/*"],
+      "@dummy-data/*": ["dummy-data/*"],
+      "@pages/*": ["pages/*"],
       "@state/*": ["state/*"],
       "@utils/*": ["utils/*"]
     },

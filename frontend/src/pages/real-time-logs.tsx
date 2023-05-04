@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import io from 'socket.io-client';
+import { v4 as uuidv4 } from 'uuid';
 
 import cn from '@utils/classnames';
-import { emails, carManufacturers } from '@data/index';
+import { emails, carManufacturers } from '@dummy-data/index';
 import { API_URL } from '@constants/index';
 
 type Log = {
@@ -15,9 +16,8 @@ type Log = {
 
 const socket = io(API_URL);
 
-const Logs = () => {
+const RealTimeLogs = () => {
   const [logs, setLogs] = useState<Log[]>([]);
-  console.log(`API URL: ${API_URL}`);
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -45,8 +45,6 @@ const Logs = () => {
 
   useEffect(() => {
     const eventListener = (data: any) => {
-      console.log('redis update event emittion detected');
-      console.log('new incoming data: ', data);
       const newData = {
         email: emails[Math.floor(Math.random() * emails.length)],
         carManufacturer:
@@ -55,7 +53,6 @@ const Logs = () => {
         timeOfEntry: data.entryTimeStamp,
       };
       setLogs((prevData) => [newData, ...prevData]);
-      // console.log('Logs: ', logs, newData);
     };
     socket.on('redis-update', eventListener);
 
@@ -91,7 +88,7 @@ const Logs = () => {
           {logs.map((row, idx) => {
             return (
               <div
-                key={row.email}
+                key={uuidv4()}
                 className={cn(
                   'flex py-4 px-3',
                   idx < logs.length - 1 ? 'border-b-2 border-b-[#3E3E3E]' : ''
@@ -110,4 +107,4 @@ const Logs = () => {
   );
 };
 
-export default Logs;
+export default RealTimeLogs;
