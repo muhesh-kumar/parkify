@@ -1,13 +1,13 @@
-import { FC, ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 import Navbar from '@components/navbar';
 import MobileNavbar from '@components/mobile-navbar';
 
 type LayoutProps = {
-  children: ReactElement | ReactElement[] | boolean;
+  children: ReactNode;
 };
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       {/* Larger screens */}

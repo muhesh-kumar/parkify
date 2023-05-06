@@ -1,20 +1,20 @@
-import { FC, ReactElement } from 'react';
+import { ReactNode } from 'react';
 
 import cn from '@utils/classnames';
 
 type SectionLayoutProps = {
-  children: ReactElement | ReactElement[];
+  children: ReactNode | ReactNode[];
   height?: string;
   width?: string;
   isCentered?: boolean;
 };
 
-const SectionLayout: FC<SectionLayoutProps> = ({
+const SectionLayout = ({
   children,
   height = '100%',
   width = '100%',
   isCentered = false,
-}) => {
+}: SectionLayoutProps) => {
   return (
     <div
       className={cn(

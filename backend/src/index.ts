@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
 
-import { io, server } from 'server';
+import { io, server } from '@config/server';
 
 io.on('connection', (socket: Socket) => {
   console.log('A user connected');

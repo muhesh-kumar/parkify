@@ -1,6 +1,17 @@
-import { useEffect, useState } from "react";
+import { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
-const ProgressProvider = ({ valueStart, valueEnd, children }: any) => {
+type ProgressProviderProps = {
+  valueStart: number;
+  valueEnd: number;
+  children: (value: number) => ReactNode;
+};
+
+const ProgressProvider = ({
+  valueStart,
+  valueEnd,
+  children,
+}: ProgressProviderProps) => {
   const [value, setValue] = useState(valueStart);
   useEffect(() => {
     setValue(valueEnd);

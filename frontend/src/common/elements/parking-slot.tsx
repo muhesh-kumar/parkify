@@ -1,4 +1,3 @@
-import { FC } from 'react';
 import { useAtom } from 'jotai';
 
 import { availableSlotsAtom } from '@state/index';
@@ -8,7 +7,7 @@ type ParkingSlotProps = {
   id: number;
 };
 
-const ParkingSlot: FC<ParkingSlotProps> = ({ id }) => {
+const ParkingSlot = ({ id }: ParkingSlotProps) => {
   const [availableSlots] = useAtom(availableSlotsAtom);
 
   return (

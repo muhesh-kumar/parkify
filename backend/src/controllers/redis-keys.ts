@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 
-import redis from 'db';
+import redis from '@config/db';
 import { Request } from 'types';
 
 export const deleteKeys = async (

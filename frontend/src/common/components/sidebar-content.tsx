@@ -10,6 +10,8 @@ import {
 
 import { selectedNavOptionAtom } from '@state/index';
 import cn from '@utils/classnames';
+import { API_URL } from '@constants/index';
+import { useEffect, useState } from 'react';
 
 const navOptions = [
   {
@@ -33,6 +35,37 @@ const SidebarContent = () => {
   const [selectedNavOption, setSelectedNavOption] = useAtom(
     selectedNavOptionAtom
   );
+  const [user, setUser] = useState(null);
+  console.log(user);
+
+  const login = () => {
+    window.open(`${API_URL}/auth/google`, '_self');
+  };
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/auth/user', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data) {
+          setUser(data);
+        }
+      } catch (error) {
+        console.error('There was a problem fetching the user:', error);
+      }
+    };
+    getUser();
+  }, []);
 
   return (
     <>
@@ -66,7 +99,7 @@ const SidebarContent = () => {
         </div>
         <button className="text-fontSelected font-semibold flex gap-1 text-sm">
           <ArrowLeftOnRectangleIcon className="h-5 w-5" />
-          <span>Log out</span>
+          <button onClick={login}>Log In</button>
         </button>
       </div>
     </>

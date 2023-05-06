@@ -1,5 +1,5 @@
-import SidebarContent from '@components/sidebar-content';
 import Logo from '@elements/logo';
+import SidebarContent from '@components/sidebar-content';
 
 const Navbar = () => {
   return (

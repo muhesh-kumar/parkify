@@ -2,7 +2,7 @@ import { Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 
 import { Request } from 'types';
-import redis from 'db';
+import redis from '@config/db';
 import HttpError from '@utils/http-error';
 
 interface Event {

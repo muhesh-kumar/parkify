@@ -3,13 +3,14 @@ import 'react-calendar-heatmap/dist/styles.css';
 
 const today = new Date();
 
-function Statistics() {
+const Statistics = () => {
   const randomValues = getRange(365).map((index) => {
     return {
       date: shiftDate(today, -index),
       count: getRandomInt(1, 5),
     };
   });
+
   return (
     <div className="min-w-[1500px] md:min-w-full">
       <CalendarHeatmap
@@ -40,20 +41,20 @@ function Statistics() {
       {/* <ReactTooltip /> */}
     </div>
   );
-}
+};
 
-function shiftDate(date: string | number | Date, numDays: number) {
+const shiftDate = (date: string | number | Date, numDays: number) => {
   const newDate = new Date(date);
   newDate.setDate(newDate.getDate() + numDays);
   return newDate;
-}
+};
 
-function getRange(count: number) {
+const getRange = (count: number) => {
   return Array.from({ length: count }, (_, i) => i);
-}
+};
 
-function getRandomInt(min: number, max: number) {
+const getRandomInt = (min: number, max: number) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
 export default Statistics;
