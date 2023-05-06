@@ -1,5 +1,4 @@
 import express, { Response, NextFunction } from 'express';
-import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import session from 'express-session';
 import passport from 'passport';
@@ -18,51 +17,17 @@ import otherRoutes from '@routes/other';
 import { Request } from 'types';
 import { io } from '@config/server';
 import setupPassport from '@config/passport';
+import swaggerSpec from '@config/swagger';
 import HttpError from '@utils/http-error';
 
-// Load config
+/* ---------------- */
+/* Configs */
+/* ---------------- */
+
 dotenv.config({ path: './src/config/config.env' });
-
-// Passport config
 setupPassport(passport);
-
 const app = express();
 
-/* ---------------- */
-/* Miscellaneous */
-/* ---------------- */
-
-const swaggerDefinition = {
-  openapi: '3.0.0',
-  info: {
-    title: 'Parkify REST API',
-    version: '1.0.0',
-    description:
-      'This is a REST API application made with Express. It retrieves data from a remote RedisDB.',
-    license: {
-      name: 'Licensed Under MIT',
-      url: 'https://spdx.org/licenses/MIT.html',
-    },
-    contact: {
-      name: 'Muhesh Kumar',
-      url: 'https://github.com/muhesh-kumar',
-    },
-  },
-  servers: [
-    {
-      url: 'http://localhost:3000',
-      description: 'Development server',
-    },
-  ],
-};
-
-const options = {
-  swaggerDefinition,
-  // Paths to files containing OpenAPI definitions
-  apis: ['./src/routes/*.ts'],
-};
-
-const swaggerSpec = swaggerJSDoc(options);
 declare module 'express-serve-static-core' {
   interface Request {
     io: Server;
@@ -82,7 +47,10 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   req.io = io;
   return next();
 });
+
+app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -109,6 +77,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 /* ---------------- */
 /* Routes */

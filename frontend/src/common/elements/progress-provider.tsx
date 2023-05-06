@@ -1,10 +1,10 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
 type ProgressProviderProps = {
   valueStart: number;
   valueEnd: number;
-  children: (value: number) => ReactNode;
+  children: (value: number) => ReactElement;
 };
 
 const ProgressProvider = ({
