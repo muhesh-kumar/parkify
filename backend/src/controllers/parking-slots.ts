@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 
-import { Request } from 'types';
+import Request from '@interfaces/request';
 import redis from '@config/db';
 import HttpError from '@utils/http-error';
 import { NUM_PARKING_SLOTS } from '@constants/index';
@@ -14,7 +14,6 @@ export const getAvailableParkingSlots = async (
   try {
     const values = await redis.smembers('availableSlots');
     availableParkingSlots = values.map((value: string) => parseInt(value, 10));
-    console.log(availableParkingSlots);
   } catch (error) {
     console.error('Error fetching set values:', error);
     throw new Error('Error fetching set values');
@@ -35,7 +34,6 @@ export const resetParkingSlots = async (
   ): Promise<number> => {
     try {
       const result = await redis.sadd(setName, value.toString());
-      console.log(`${result} value added to set ${setName}`);
       return result;
     } catch (err) {
       console.error(`Error adding values to set ${setName}: `, err);
@@ -72,7 +70,7 @@ export const bookSlot = async (
       res.status(404).json({ message: 'ID not found in set' });
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
     const error = new HttpError('Unable to remove ID from set', 500);
     return next(error);
   }

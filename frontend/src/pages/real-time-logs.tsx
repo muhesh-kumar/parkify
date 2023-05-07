@@ -25,7 +25,6 @@ const RealTimeLogs = () => {
       try {
         const result = await fetch(`${API_URL}/api/events`);
         const data = await result.json();
-        console.log('Data', data);
         const newLogs: Log[] = Object.keys(data.events).map((key) => ({
           email: emails[Math.floor(Math.random() * emails.length)],
           carManufacturer:

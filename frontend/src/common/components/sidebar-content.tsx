@@ -64,7 +64,7 @@ const SidebarContent = () => {
         console.error('There was a problem fetching the user:', error);
       }
     };
-    getUser();
+    // getUser();
   }, []);
 
   return (
@@ -97,9 +97,12 @@ const SidebarContent = () => {
           <p className="text-sm">Pheonix Mall</p>
           <p className="text-[11px] text-[#898989]">Main Parking Lot</p>
         </div>
-        <button className="text-fontSelected font-semibold flex gap-1 text-sm">
+        <button
+          className="text-fontSelected font-semibold flex gap-1 text-sm"
+          onClick={login}
+        >
           <ArrowLeftOnRectangleIcon className="h-5 w-5" />
-          <button onClick={login}>Log In</button>
+          <span>Log In</span>
         </button>
       </div>
     </>

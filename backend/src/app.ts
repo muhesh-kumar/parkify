@@ -4,6 +4,7 @@ import session from 'express-session';
 import passport from 'passport';
 import bodyParser from 'body-parser';
 import { Server } from 'socket.io';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 
@@ -14,7 +15,7 @@ import authRoutes from '@routes/auth';
 import userRoutes from '@routes/user';
 import otherRoutes from '@routes/other';
 
-import { Request } from 'types';
+import Request from '@interfaces/request';
 import { io } from '@config/server';
 import setupPassport from '@config/passport';
 import swaggerSpec from '@config/swagger';
@@ -50,14 +51,15 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
+app.use(cors());
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
 
   next();
 });

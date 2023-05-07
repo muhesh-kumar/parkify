@@ -1,9 +1,9 @@
 import { Response, NextFunction } from 'express';
-import { Request } from 'types';
 
+import Request from '@interfaces/request';
+import User from '@interfaces/user';
 import redis from '@config/db';
 import HttpError from '@utils/http-error';
-import { User } from 'types/index';
 
 export const getUsers = async (
   req: Request,

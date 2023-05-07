@@ -1,5 +1,5 @@
 import express, { Response, NextFunction } from 'express';
-import { Request } from 'types';
+import Request from '@interfaces/request';
 
 const router = express.Router();
 

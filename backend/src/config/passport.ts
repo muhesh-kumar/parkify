@@ -1,9 +1,8 @@
 import { PassportStatic } from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
-import { User } from 'types/index';
+import User from '@interfaces/user';
 import redis from '@config/db';
-import { IncomingMessage } from 'http';
 
 const setupPassport = (passport: PassportStatic) => {
   passport.use(
@@ -48,16 +47,20 @@ const setupPassport = (passport: PassportStatic) => {
     )
   );
 
-  passport.serializeUser((user: IncomingMessage, done: any) => {
+  passport.serializeUser((user: any, done: any) => {
+    console.log('Serializing user: ', user);
     done(null, user);
   });
 
-  passport.deserializeUser((id: string, done: any) => {
-    // TODO: Implement this
-    // User.findById(id, (err: Error, doc: IMongoDBUser) => {
-    //   // Whatever we return goes to the client and binds to the req.user property
-    //   return done(null, doc);
-    // });
+  passport.deserializeUser(async (id: string, done: any) => {
+    try {
+      const user = await redis.get(`user-${id}`);
+      console.log('Deserialized user: ', user);
+      done(null, user);
+    } catch (err) {
+      console.log('Error deserializing', err);
+      done(err, null);
+    }
   });
 };
 

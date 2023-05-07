@@ -9,7 +9,8 @@
       "@lib/*": ["lib/*"],
       "@middlewares/*": ["middlewares/*"],
       "@routes/*": ["routes/*"],
-      "types/*": ["types/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "types/*": ["@types/jest"],
       "@validations/*": ["validations/*"]
     },
     "target": "ES6",
@@ -20,8 +21,8 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src/**/*"]
 }
