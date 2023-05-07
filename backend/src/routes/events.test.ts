@@ -1,7 +1,7 @@
 import request from 'supertest';
 
-import app from '../../src/app';
-import { getNextAvailableParkingSlot } from '../../src/controllers/events';
+import app from 'app';
+import { getNextAvailableParkingSlot } from '@controllers/events';
 
 describe('Test GET /api/events', () => {
   test('Should return events', async () => {
@@ -30,7 +30,11 @@ describe('POST /api/events', () => {
   it('Should create a new event', async () => {
     const entryTimeStamp = new Date().toISOString();
 
-    const res = await request(app).post('/api/events').send({ entryTimeStamp });
+    const res = await request(app).post('/api/events').send({ entryTimeStamp }); // create a new event
+    console.log('Created event during test: ', res.body.event);
+    const key = res.body.event.licensePlateNumber;
+    const del = await request(app).delete(`/api/events/${key}`); // now delete the created event
+    console.log('Status of deletion during test: ', del.body);
 
     expect(res.status).toEqual(201);
     expect(res.body.event.licensePlateNumber).toBeDefined();

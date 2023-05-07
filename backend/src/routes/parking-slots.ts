@@ -3,8 +3,9 @@ const router = express.Router();
 
 import {
   resetParkingSlots,
-  getAvailableParkingSlots,
-  bookSlot,
+  getParkingSlots,
+  bookParkingSlot,
+  freeParkingSlot,
 } from '@controllers/parking-slots';
 
 /**
@@ -14,7 +15,7 @@ import {
  *     summary: Retrieve all available parking slots
  *     description: Retrieve the IDs of all the available parking slots
  */
-router.get('/', getAvailableParkingSlots);
+router.get('/', getParkingSlots);
 
 /**
  * @swagger
@@ -28,7 +29,7 @@ router.post('/', resetParkingSlots);
 /**
  * @swagger
  * /api/parking-slots/{id}:
- *   patch:
+ *   delete:
  *     summary: Book the parking slot with given id
  *     description: Book the parking slot with given id if it's available
  *     parameters:
@@ -39,6 +40,22 @@ router.post('/', resetParkingSlots);
  *         schema:
  *           type: integer
  */
-router.patch('/:id', bookSlot);
+router.delete('/:id', bookParkingSlot);
+
+/**
+ * @swagger
+ * /api/parking-slots/{id}:
+ *   post:
+ *     summary: Free the parking slot with given id
+ *     description: Free the parking slot with given id if it's available
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Numeric ID of the parking slot to free.
+ *         schema:
+ *           type: integer
+ */
+router.post('/:id', freeParkingSlot);
 
 export default router;

@@ -5,7 +5,6 @@ import Request from '@interfaces/request';
 import Event from '@interfaces/event';
 import redis from '@config/db';
 import HttpError from '@utils/http-error';
-import { resetParkingSlots } from './parking-slots';
 
 export const getEvents = async (
   req: Request,
@@ -58,7 +57,7 @@ export const createEvent = async (
     return next(error);
   }
 
-  let createdEvent:Event;
+  let createdEvent: Event;
   try {
     const { entryTimeStamp } = req.body;
     console.log(entryTimeStamp);
@@ -98,6 +97,38 @@ export const createEvent = async (
   }
 
   res.status(201).json({ event: createdEvent });
+};
+
+export const deleteEvent = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { licensePlateNumber } = req.params;
+  const io = req.io;
+
+  try {
+    const createdEvent = await redis.get(licensePlateNumber);
+    const bookedParkingSlot = JSON.parse(
+      createdEvent!
+    ).nextAvailableParkingSlot;
+    const eventResult = await redis.del(licensePlateNumber);
+    // Free the parking slot which was allocated
+    const parkingSlotResult = await redis.sadd(
+      'availableSlots',
+      bookedParkingSlot
+    );
+
+    if (eventResult && parkingSlotResult) {
+      io.emit('redis-update', createdEvent);
+      res.status(201).json({ message: 'Successfully deleted the event' });
+    } else {
+      res.status(500).json({ message: 'Unable to delete the given event' });
+    }
+  } catch (err) {
+    const error = new HttpError('Unable to delete the given event', 500);
+    return next(error);
+  }
 };
 
 export const getNextAvailableParkingSlot = async (): Promise<string | null> => {
