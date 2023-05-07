@@ -1,7 +1,6 @@
 export default interface Event {
-  [key: string]: {
-    carImageLocation: string;
-    nextAvailableParkingSlot: string;
-    entryTimeStamp: string;
-  }
-};
+  licensePlateNumber: string;
+  carImageLocation: string;
+  nextAvailableParkingSlot: string | null;
+  entryTimeStamp: string;
+}
