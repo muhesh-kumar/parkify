@@ -14,7 +14,7 @@ const Dashboard = () => {
   const [_, setAvailableSlots] = useAtom(availableSlotsAtom);
 
   const getAvailabilitySlots = async () => {
-    const response = await fetch(`${API_URL}/api/parking-slots`);
+    const response = await fetch(`${API_URL}/parking-slots`);
     const availableSlots = await response.json();
     setAvailableSlots(new Set(availableSlots.availableParkingSlots));
   };

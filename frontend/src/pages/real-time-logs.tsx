@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import cn from '@utils/classnames';
 import { emails, carManufacturers } from '@dummy-data/index';
 import { API_URL } from '@constants/index';
+import Event from '@interfaces/event';
 
 type Log = {
   email: string;
@@ -23,16 +24,16 @@ const RealTimeLogs = () => {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const result = await fetch(`${API_URL}/api/events`);
+        const result = await fetch(`${API_URL}/events`);
         const data = await result.json();
-        const newLogs: Log[] = Object.keys(data.events).map((key) => ({
+        const newLogs: Log[] = data.events.map((event: Event) => ({
           email: emails[Math.floor(Math.random() * emails.length)],
           carManufacturer:
             carManufacturers[
               Math.floor(Math.random() * carManufacturers.length)
             ],
-          plateNumber: key,
-          timeOfEntry: data.events[key].entryTimeStamp,
+          plateNumber: event.licensePlateNumber,
+          timeOfEntry: event.entryTimeStamp,
         }));
         // reverse newLogs array
         newLogs.reverse();
@@ -46,13 +47,13 @@ const RealTimeLogs = () => {
 
   // Listen to redis-update socket event and update the logs
   useEffect(() => {
-    // TODO: Create API contracts and give types to the data
-    const eventListener = (data: any) => {
+    const eventListener = (data: Event) => {
+      console.log('Incoming data: ', data);
       const newData = {
         email: emails[Math.floor(Math.random() * emails.length)],
         carManufacturer:
           carManufacturers[Math.floor(Math.random() * carManufacturers.length)],
-        plateNumber: data.plateNumber,
+        plateNumber: data.licensePlateNumber,
         timeOfEntry: data.entryTimeStamp,
       };
       setLogs((prevData) => [newData, ...prevData]);

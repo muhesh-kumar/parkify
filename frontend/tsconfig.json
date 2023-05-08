@@ -8,6 +8,7 @@
       "@layouts/*": ["common/layouts/*"],
       "@constants/*": ["constants/*"],
       "@dummy-data/*": ["dummy-data/*"],
+      "@interfaces/*": ["interfaces/*"],
       "@pages/*": ["pages/*"],
       "@state/*": ["state/*"],
       "@utils/*": ["utils/*"]

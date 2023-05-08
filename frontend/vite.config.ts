@@ -13,6 +13,7 @@ export default defineConfig({
       '@layouts': path.resolve(__dirname, './src/common/layouts'),
       '@constants': path.resolve(__dirname, './src/constants'),
       '@dummy-data': path.resolve(__dirname, './src/dummy-data'),
+      '@interfaces': path.resolve(__dirname, './src/interfaces'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@state': path.resolve(__dirname, './src/state'),
       '@utils': path.resolve(__dirname, './src/utils'),
