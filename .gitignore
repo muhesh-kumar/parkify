@@ -26,3 +26,6 @@ dist-ssr
 frontend/.env
 backend/src/config/config.env
 backend/coverage
+
+# python
+hardware/raspberry-pi/venv
