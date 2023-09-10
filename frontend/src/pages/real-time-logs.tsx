@@ -8,11 +8,14 @@ import { emails, carManufacturers } from '@dummy-data/index';
 import { API_URL } from '@constants/index';
 import Event from '@interfaces/event';
 
+type EntryOrExit = 'Entry' | 'Exit';
+
 type Log = {
   email: string;
   carManufacturer: string;
-  plateNumber: string;
-  timeOfEntry: string;
+  licensePlateNumber: string;
+  timeStamp: string;
+  eventType: EntryOrExit;
 };
 
 const socket = io(API_URL);
@@ -25,15 +28,17 @@ const RealTimeLogs = () => {
     const fetchLogs = async () => {
       try {
         const result = await fetch(`${API_URL}/events`);
-        const data = await result.json();
-        const newLogs: Log[] = data.events.map((event: Event) => ({
+        const response = await result.json();
+        console.log('resp: ', response);
+        const newLogs: Log[] = response.data.events.map((event: Event) => ({
           email: emails[Math.floor(Math.random() * emails.length)],
           carManufacturer:
             carManufacturers[
               Math.floor(Math.random() * carManufacturers.length)
             ],
-          plateNumber: event.licensePlateNumber,
-          timeOfEntry: event.entryTimeStamp,
+          licensePlateNumber: event.licensePlateNumber,
+          timeStamp: event.timeStamp,
+          eventType: (event.isEntry ? 'Entry' : 'Exit') as EntryOrExit,
         }));
         // reverse newLogs array
         newLogs.reverse();
@@ -53,8 +58,9 @@ const RealTimeLogs = () => {
         email: emails[Math.floor(Math.random() * emails.length)],
         carManufacturer:
           carManufacturers[Math.floor(Math.random() * carManufacturers.length)],
-        plateNumber: data.licensePlateNumber,
-        timeOfEntry: data.entryTimeStamp,
+        licensePlateNumber: data.licensePlateNumber,
+        timeStamp: data.timeStamp,
+        eventType: (data.isEntry ? 'Entry' : 'Exit') as EntryOrExit,
       };
       setLogs((prevData) => [newData, ...prevData]);
     };
@@ -83,10 +89,11 @@ const RealTimeLogs = () => {
       {/* Logs Table */}
       <div className="bg-primaryBackground rounded-xl flex flex-col font-semibold text-xs max-h-[520px] overflow-x-auto">
         <div className="border-b border-b-[#3E3E3E] flex bg-selected text-fontSelected rounded-t-xl py-6 px-3">
-          <p className="w-1/4">Name/Email</p>
-          <p className="w-1/4">Car Manufacturer</p>
-          <p className="w-1/4">Plate Number</p>
-          <p className="w-1/4">Time of Entry</p>
+          <p className="w-2/6 md:w-1/5">Name/Email</p>
+          <p className="w-1/6 md:w-1/5">Car Manufacturer</p>
+          <p className="w-1/6 md:w-1/5">Plate Number</p>
+          <p className="w-1/6 md:w-1/5">Timestamp</p>
+          <p className="w-1/6 md:w-1/5">Event Type</p>
         </div>
         <div className="flex flex-col gap-2 overflow-y-auto">
           {logs.map((row, idx) => {
@@ -98,10 +105,11 @@ const RealTimeLogs = () => {
                   idx < logs.length - 1 ? 'border-b-2 border-b-[#3E3E3E]' : ''
                 )}
               >
-                <p className="w-1/4">{row.email}</p>
-                <p className="w-1/4">{row.carManufacturer}</p>
-                <p className="w-1/4">{row.plateNumber}</p>
-                <p className="w-1/4">{row.timeOfEntry}</p>
+                <p className="w-2/6 md:w-1/5">{row.email}</p>
+                <p className="w-1/6 md:w-1/5">{row.carManufacturer}</p>
+                <p className="w-1/6 md:w-1/5">{row.licensePlateNumber}</p>
+                <p className="w-1/6 md:w-1/5">{row.timeStamp}</p>
+                <p className="w-1/6 md:w-1/5">{row.eventType}</p>
               </div>
             );
           })}

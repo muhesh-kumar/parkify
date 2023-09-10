@@ -7,10 +7,10 @@ import ParkingSlot from '@elements/parking-slot';
 import AvailabilityStatus from '@components/availability-status';
 
 import { availableSlotsAtom } from '@state/index';
-import { API_URL } from '@constants/index';
+import { API_URL, SERVER_URL } from '@constants/index';
 
 const Dashboard = () => {
-  const socket = io(API_URL);
+  const socket = io(SERVER_URL);
   const [_, setAvailableSlots] = useAtom(availableSlotsAtom);
 
   const getAvailabilitySlots = async () => {
