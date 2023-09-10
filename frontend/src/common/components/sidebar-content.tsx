@@ -36,8 +36,8 @@ const SidebarContent = () => {
     selectedNavOptionAtom
   );
   const [user, setUser] = useState(null);
-  console.log(user);
 
+  // TODO: auth is not done fully yet
   const login = () => {
     window.open(`${API_URL}/auth/google`, '_self');
   };

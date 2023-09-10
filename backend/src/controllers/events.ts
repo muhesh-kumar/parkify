@@ -1,10 +1,14 @@
 import { Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
+import { v4 as uuidv4 } from 'uuid';
 
 import Request from '@interfaces/request';
 import Event from '@interfaces/event';
 import redis from '@config/db';
+
 import HttpError from '@utils/http-error';
+import { getNextAvailableParkingSlot } from '@utils/parking-slot';
+import getRandomLicensePlateNumber from '@utils/get-random-license-plate-number';
 
 export const getEvents = async (
   req: Request,
@@ -24,23 +28,32 @@ export const getEvents = async (
       keys.push(...batchKeys);
     } while (cursor !== '0');
 
-    const values = await redis.mget(...keys);
+    const values =
+      keys !== null && keys.length > 0 ? await redis.mget(...keys) : [];
     keys.forEach((key, i) => {
-      if (key !== 'availableSlots')
+      if (key !== 'availableSlots' && key.startsWith('ev_'))
         events.push({ licensePlateNumber: key, ...JSON.parse(values[i]!) });
     });
   } catch (err) {
-    console.log(err);
-    const error = new HttpError('Unable to fetch the events', 500);
-    return next(error);
+    console.error(err);
+    const message = 'Unable to fetch the events';
+    res.status(500).json({ status: 'fail', message });
+    return next(new HttpError(message, 500));
   }
 
   if (Object.keys(events).length === 0) {
-    const error = new HttpError('Could not find any events', 404);
-    return next(error);
+    const message = 'Could not find any events';
+    // res.status(404).json({ status: 'fail', message });
+    return next(new HttpError(message, 404));
   }
 
-  res.json({ events: events });
+  res.status(200).json({
+    status: 'success',
+    results: events.length,
+    data: { events },
+  });
+
+  console.log('printing after events');
 };
 
 export const createEvent = async (
@@ -48,9 +61,8 @@ export const createEvent = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const io = req.io;
+  const { io } = req;
   const errors = validationResult(req);
-  console.log('Entered POST Request: ', req.body);
 
   if (!errors.isEmpty()) {
     const error = new HttpError('Invalid data provided', 422);
@@ -59,61 +71,91 @@ export const createEvent = async (
 
   let createdEvent: Event;
   try {
-    const { entryTimeStamp } = req.body;
-    console.log(entryTimeStamp);
-    // TODO: receive it from the RPi itself
-    const plateNumber = Math.floor(Math.random() * 1000000000).toString(36);
-    // const plateNumber = 'ABC-123-WW-45'; // TODO: receive it from the RPi itself
-
+    const { timeStamp, isEntry, licensePlateNumber } = req.body;
+    // const plateNumber = getRandomLicensePlateNumber();
     const nextAvailableParkingSlot = await getNextAvailableParkingSlot();
-    console.log('next available slot: ', nextAvailableParkingSlot);
+
+    if (!nextAvailableParkingSlot) {
+      res.status(422).json({ message: 'No parking slots available' });
+      return next();
+    }
+
     createdEvent = {
-      licensePlateNumber: plateNumber,
-      entryTimeStamp,
+      id: `ev_${uuidv4()}`,
+      licensePlateNumber,
+      // licensePlateNumber: plateNumber,
+      timeStamp,
       carImageLocation: '/upload/test.jpg',
-      nextAvailableParkingSlot: nextAvailableParkingSlot,
-      // carImageLocation: req.file.path,
+      isEntry,
     };
 
     // add the event
-    const response = await redis.set(plateNumber, JSON.stringify(createdEvent));
-    console.log('when adding the event to the db: ', response);
+    const eventResult = await redis.set(
+      createdEvent.id,
+      JSON.stringify(createdEvent)
+    );
 
-    // book the slot
-    if (nextAvailableParkingSlot) {
-      const result = await redis.srem(
-        'availableSlots',
+    if (isEntry) {
+      // store the licenseplate along with allocated parking slot for easy removal during vehicle exit
+      const carResult = await redis.set(
+        `car_${createdEvent.licensePlateNumber}`,
         nextAvailableParkingSlot
       );
-      console.log('when booking a slot: ', result);
+      // Vehicle entering => allocate a free slot
+      if (nextAvailableParkingSlot && eventResult && carResult) {
+        const parkingSlotResult = await redis.srem(
+          'availableSlots',
+          nextAvailableParkingSlot
+        );
+        if (!parkingSlotResult) {
+          const message =
+            'Cannot book a parking slot. No parking slots available';
+          res.status(422).json({ message });
+          return next(new HttpError(message, 422));
+        }
+      }
+    } else {
+      // Vehicle exiting => free the allocated slot
+      const allocatedParkingSlot = await redis.get(
+        `car_${createdEvent.licensePlateNumber}`
+      );
+      const parkingSlotResult = await redis.sadd(
+        'availableSlots',
+        allocatedParkingSlot!
+      );
+      if (!parkingSlotResult) {
+        const message = 'Vehicle not found. Unable to create a new event';
+        res.status(422).json({ message });
+        return next(new HttpError(message, 422));
+      }
     }
 
     io.emit('redis-update', createdEvent);
   } catch (err) {
-    console.log(err);
-    const error = new HttpError('Unable to create a new event', 422);
-    res.status(422).json({ message: 'Unable to create a new event' });
-    return next(error);
+    console.error(err);
+    return next(new HttpError('Unable to create a new event', 422));
   }
 
-  res.status(201).json({ event: createdEvent });
+  res.status(201).json({ status: 'success', data: { event: createdEvent } });
 };
 
+// Only for Testing purposes(i.e., client shouldn't call this)
 export const deleteEvent = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   const { licensePlateNumber } = req.params;
-  const io = req.io;
+  const { io } = req;
 
   try {
     const createdEvent = await redis.get(licensePlateNumber);
+    const eventResult = await redis.del(licensePlateNumber);
+
+    // Free the parking slot that was allocated
     const bookedParkingSlot = JSON.parse(
       createdEvent!
     ).nextAvailableParkingSlot;
-    const eventResult = await redis.del(licensePlateNumber);
-    // Free the parking slot which was allocated
     const parkingSlotResult = await redis.sadd(
       'availableSlots',
       bookedParkingSlot
@@ -121,17 +163,33 @@ export const deleteEvent = async (
 
     if (eventResult && parkingSlotResult) {
       io.emit('redis-update', createdEvent);
-      res.status(201).json({ message: 'Successfully deleted the event' });
+      res.status(204).json({ status: 'success', data: null });
     } else {
-      res.status(500).json({ message: 'Unable to delete the given event' });
+      res
+        .status(500)
+        .json({ status: 'fail', message: 'Unable to delete the given event' });
     }
   } catch (err) {
-    const error = new HttpError('Unable to delete the given event', 500);
-    return next(error);
+    const message = 'Unable to delete the given event';
+    res.status(500).json({ status: 'fail', message });
+    return next(new HttpError(message, 500));
   }
 };
 
-export const getNextAvailableParkingSlot = async (): Promise<string | null> => {
-  const members = await redis.smembers('availableSlots');
-  return members.length > 0 ? members[0] : '';
+export const validateCreateEventRequestBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { timeStamp, licensePlateNumber } = req.body;
+  if (
+    !timeStamp ||
+    !req.body.hasOwnProperty('isEntry') || // because isEntry is a boolean
+    !licensePlateNumber
+  ) {
+    return res
+      .status(400)
+      .json({ status: 'fail', message: 'Invalid data provided' });
+  }
+  next();
 };

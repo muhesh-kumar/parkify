@@ -1,7 +1,12 @@
 import express from 'express';
 const router = express.Router();
 
-import { getEvents, createEvent, deleteEvent } from '@controllers/events';
+import {
+  validateCreateEventRequestBody,
+  getEvents,
+  createEvent,
+  deleteEvent,
+} from '@controllers/events';
 
 /**
  * @swagger
@@ -19,7 +24,7 @@ router.get('/', getEvents);
  *     summary: Create a new event
  *     description: create a new event and store it in the Redis DB.
  */
-router.post('/', createEvent);
+router.post('/', validateCreateEventRequestBody, createEvent);
 
 /**
  * @swagger
@@ -28,6 +33,8 @@ router.post('/', createEvent);
  *     summary: Delete an event with the given licensePlateNumber
  *     description: Given an object with the licensePlateNumber as one of its keys, find an event with that licensePlateNumber and delete it if exists in the DB
  */
+
+// TODO: create a param middleware to validate licensePlateNumber
 router.delete('/:licensePlateNumber', deleteEvent);
 
 export default router;

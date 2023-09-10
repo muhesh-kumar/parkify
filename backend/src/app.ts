@@ -89,13 +89,19 @@ app.use((req, res, next) => {
 /* Routes */
 /* ---------------- */
 
-app.use('/api/events', eventRoutes);
-app.use('/api/parking-slots', parkingSlotsRoutes);
-app.use('/api/redis-keys', redisKeysRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/v1/events', eventRoutes);
+app.use('/api/v1/parking-slots', parkingSlotsRoutes);
+app.use('/api/v1/redis-keys', redisKeysRoutes);
+app.use('/api/v1/users', userRoutes);
 app.use('/auth', authRoutes);
 app.use('/', otherRoutes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server!`,
+  });
+});
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const error = new HttpError('could not find this route.', 404);
@@ -106,7 +112,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
   res.status(error.code || 500);
-  res.json({ message: error.message || 'An unknown error occurred!' });
+  res.json({
+    status: 'fail',
+    message: error.message || 'An unknown error occurred!',
+  });
 });
 
 export default app;

@@ -1,6 +1,7 @@
 export default interface Event {
+  id: string;
   licensePlateNumber: string;
   carImageLocation: string;
-  nextAvailableParkingSlot: string | null;
-  entryTimeStamp: string;
+  timeStamp: string;
+  isEntry: boolean;
 }
