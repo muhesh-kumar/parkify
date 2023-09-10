@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import Redis from 'ioredis';
 
 dotenv.config({ path: './src/config/config.env' });
+console.log('Redis port:', parseInt(process.env.REDIS_PORT!));
 
 export default new Redis({
   password: process.env.REDIS_PASSWORD,
