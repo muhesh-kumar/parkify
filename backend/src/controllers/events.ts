@@ -28,7 +28,8 @@ export const getEvents = async (
       keys.push(...batchKeys);
     } while (cursor !== '0');
 
-    const values = await redis.mget(...keys);
+    const values =
+      keys !== null && keys.length > 0 ? await redis.mget(...keys) : [];
     keys.forEach((key, i) => {
       if (key !== 'availableSlots' && key.startsWith('ev_'))
         events.push({ licensePlateNumber: key, ...JSON.parse(values[i]!) });
@@ -36,7 +37,7 @@ export const getEvents = async (
   } catch (err) {
     console.error(err);
     const message = 'Unable to fetch the events';
-    // res.status(500).json({ status: 'fail', message });
+    res.status(500).json({ status: 'fail', message });
     return next(new HttpError(message, 500));
   }
 
@@ -106,8 +107,12 @@ export const createEvent = async (
           'availableSlots',
           nextAvailableParkingSlot
         );
-        if (!parkingSlotResult)
-          return next(new HttpError('Unable to create a new event', 422));
+        if (!parkingSlotResult) {
+          const message =
+            'Cannot book a parking slot. No parking slots available';
+          res.status(422).json({ message });
+          return next(new HttpError(message, 422));
+        }
       }
     } else {
       // Vehicle exiting => free the allocated slot
@@ -118,8 +123,11 @@ export const createEvent = async (
         'availableSlots',
         allocatedParkingSlot!
       );
-      if (!parkingSlotResult)
-        return next(new HttpError('Unable to create a new event', 422));
+      if (!parkingSlotResult) {
+        const message = 'Vehicle not found. Unable to create a new event';
+        res.status(422).json({ message });
+        return next(new HttpError(message, 422));
+      }
     }
 
     io.emit('redis-update', createdEvent);
